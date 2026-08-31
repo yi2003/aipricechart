@@ -622,16 +622,24 @@ function toast(msg, ms = 3200) {
 }
 
 function renderAuthUI() {
-  const wrap = $("#gBtnWrap"), chip = $("#userChip");
+  const wrap = $("#gBtnWrap"), chip = $("#userChip"), fallback = $("#signInFallback");
   if (state.user) {
-    wrap.hidden = true;
+    wrap.hidden = true; fallback.hidden = true;
     chip.hidden = false;
     $("#userPic").src = state.user.picture || "";
     $("#userName").textContent = (state.user.name || "").split(" ")[0] || "you";
-  } else {
-    chip.hidden = true;
-    wrap.hidden = !window.GOOGLE_CLIENT_ID || !window.google?.accounts?.id;
+    return;
   }
+  chip.hidden = true;
+  if (!window.GOOGLE_CLIENT_ID) {
+    // deployment without a Google Client ID: show a plain button so the
+    // feature is discoverable; clicking it explains the one-time setup
+    fallback.hidden = false; wrap.hidden = true;
+    return;
+  }
+  // configured: real Google button once the GIS script has loaded
+  fallback.hidden = true;
+  wrap.hidden = !window.google?.accounts?.id;
 }
 
 function jwtPayload(token) {
@@ -661,6 +669,13 @@ function initAuth() {
     localStorage.removeItem("aipc.presetsCache");
     renderAuthUI(); renderPresetChips();
     toast("Signed out — browsing stays fully available");
+  });
+  $("#signInFallback").addEventListener("click", () => {
+    if (!window.GOOGLE_CLIENT_ID) {
+      toast("Google sign-in needs a one-time setup: create an OAuth Client ID and put it in client-id.js — see README “Google login & saved presets”", 6000);
+      return;
+    }
+    try { window.google?.accounts?.id?.prompt(); } catch { /* GIS not loaded yet */ }
   });
 
   // restore profile from a previous visit on this device
