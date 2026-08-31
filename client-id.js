@@ -6,4 +6,4 @@
 //        http://localhost:4173
 //   3. Paste the ID below AND set GOOGLE_CLIENT_ID in Vercel → Settings → Environment Variables.
 // Leave empty "" and the app simply stays anonymous-only (no sign-in button shown).
-window.GOOGLE_CLIENT_ID = window.GOOGLE_CLIENT_ID || "";
+window.GOOGLE_CLIENT_ID = window.GOOGLE_CLIENT_ID || "403498956972-3jj51msmqe2vqo4mb43r5uafdpuv1hdq.apps.googleusercontent.com";
