@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Compare current AI / LLM API prices — input, output, cached and blended cost per 1M tokens across OpenAI, Anthropic, Google, xAI, DeepSeek and 60+ providers. August 2026 dataset." />
+  <title>AI Price Chart — Current AI Model Price Comparison</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💸</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">💸</span>
+      <div>
+        <h1>AI&nbsp;Price&nbsp;Chart</h1>
+        <p class="tagline">Every current AI model, priced side by side <span class="dot">·</span> <span id="asOfBadge" class="pill">…</span></p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button id="csvBtn" class="btn ghost" title="Export the current view as CSV">⬇ CSV</button>
+      <button id="themeBtn" class="btn ghost" title="Toggle light / dark theme" aria-label="Toggle theme">🌙</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- Summary stats -->
+    <section id="stats" class="stats" aria-label="Dataset summary"></section>
+
+    <!-- Controls -->
+    <section class="controls" aria-label="Filters">
+      <div class="row">
+        <input id="search" type="search" placeholder="Search model or provider…  (e.g. opus, gemini, deepseek)" autocomplete="off" spellcheck="false" />
+
+        <details id="provPicker" class="picker">
+          <summary class="btn">Providers <span id="provCount" class="count"></span> ▾</summary>
+          <div class="picker-panel">
+            <input id="provSearch" type="search" placeholder="Filter providers…" autocomplete="off" />
+            <div class="picker-actions">
+              <button id="provAll" class="btn tiny ghost" type="button">Show all</button>
+              <button id="provNone" class="btn tiny ghost" type="button">Check all</button>
+              <button id="provTop" class="btn tiny ghost" type="button">Majors only</button>
+            </div>
+            <div id="provList" class="prov-list" role="group" aria-label="Provider checkboxes"></div>
+          </div>
+        </details>
+
+        <div class="seg" id="typeSeg" role="group" aria-label="Model type">
+          <button class="seg-btn active" data-type="all" type="button">All</button>
+          <button class="seg-btn" data-type="Proprietary" type="button">API</button>
+          <button class="seg-btn" data-type="Open Weight" type="button">Open&nbsp;weights</button>
+        </div>
+
+        <label class="check"><input id="pricedOnly" type="checkbox" checked /> Hide unpriced / self-host</label>
+      </div>
+
+      <!-- Calculator -->
+      <div class="row calc" aria-label="Workload calculator">
+        <span class="calc-label">🧮 Your workload →</span>
+        <label>in <input id="calcIn" type="number" min="0" step="1" value="8" /> K tok</label>
+        <label>out <input id="calcOut" type="number" min="0" step="1" value="2" /> K tok</label>
+        <label>× <input id="calcReqs" type="number" min="0" step="100" value="1000" /> req / mo</label>
+        <span class="calc-hint">adds a “Your cost / mo” column</span>
+        <div class="seg mini" id="tierSeg" role="group" aria-label="Time-tiered pricing" title="Models with time-based pricing (e.g. DeepSeek off-peak)">
+          <button class="seg-btn active" data-tier="current" type="button">⏰ Now</button>
+          <button class="seg-btn" data-tier="peak" type="button">Peak</button>
+          <button class="seg-btn" data-tier="off-peak" type="button">Off-peak</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- View tabs -->
+    <nav class="tabs" role="tablist" aria-label="View mode">
+      <button class="tab active" data-view="table" role="tab" aria-selected="true" type="button">▤ Table</button>
+      <button class="tab" data-view="chart" role="tab" aria-selected="false" type="button">▥ Chart</button>
+      <span class="tabs-spacer"></span>
+      <label class="check" id="logWrap" hidden><input id="logScale" type="checkbox" /> Log scale</label>
+    </nav>
+
+    <!-- Table view -->
+    <section id="tableView">
+      <div class="table-scroll">
+        <table id="priceTable" aria-label="AI model prices">
+          <thead>
+            <tr>
+              <th class="cmp-col" title="Add to comparison"></th>
+              <th data-key="name" class="sortable">Model</th>
+              <th data-key="provider" class="sortable">Provider</th>
+              <th data-key="ctxTok" class="sortable num">Context</th>
+              <th data-key="input" class="sortable num">Input $/M</th>
+              <th data-key="cached" class="sortable num col-cached">Cached $/M</th>
+              <th data-key="output" class="sortable num">Output $/M</th>
+              <th data-key="blended" class="sortable num">Blended $/M</th>
+              <th data-key="score" class="sortable num col-score">Score<span class="fn">†</span></th>
+              <th data-key="monthly" class="sortable num col-calc">You / mo</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <p id="emptyMsg" class="empty" hidden>No models match your filters.</p>
+    </section>
+
+    <!-- Chart view -->
+    <section id="chartView" hidden>
+      <p class="chart-note">Priced models only — bars show USD per 1M tokens, sorted by blended price. Click a bar for details.</p>
+      <div id="chart" class="chart"></div>
+    </section>
+
+    <p class="footnote">
+      <span class="fn">†</span> Composite quality score from BenchLM.ai — shown for value context, not an official benchmark. <br />
+      <span class="fn">Blended</span> = (3 × input + 1 × output) ÷ 4, the common 3:1 workload approximation.
+      All prices are first-party API rates in USD per 1,000,000 tokens.
+      Rows marked <span class="tag open">open</span> <strong>self-host</strong> have open weights but no first-party
+      API rate in the dataset — run them yourself or check resellers like OpenRouter.
+      Rows marked <span class="tag open">free api</span> genuinely cost $0 on the provider's own API.
+      Flagship prices are cross-checked against official provider docs on every refresh.
+      <strong>Always confirm with the provider's official pricing page before buying.</strong>
+    </p>
+  </main>
+
+  <!-- Compare tray -->
+  <div id="tray" class="tray" hidden>
+    <span id="trayLabel"></span>
+    <button id="compareBtn" class="btn primary" type="button">Compare ▸</button>
+    <button id="clearCmp" class="btn ghost" type="button">Clear</button>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <button id="modalClose" class="btn ghost modal-x" type="button" aria-label="Close">✕</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div id="sources" class="sources"></div>
+    <p>Built as a static, dependency-free app · data snapshot 2026-08-30 · prices change often — verify with providers.</p>
+  </footer>
+
+  <script src="data/models.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

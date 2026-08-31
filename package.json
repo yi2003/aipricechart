@@ -1,0 +1,11 @@
+{
+  "name": "ai-price-chart",
+  "version": "1.0.0",
+  "description": "Compare current AI / LLM API prices across every major provider — static, dependency-free.",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "token": "node token.js"
+  }
+}

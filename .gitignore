@@ -1,0 +1,5 @@
+.refresh-token
+data/backups/
+node_modules/
+logs/
+data/last-refresh.json
