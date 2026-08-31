@@ -96,6 +96,38 @@ are read-only, so a serverless refresh couldn't persist `data/models.js` — and
 on your machine means the secret token and scraping logic never leave it. The static
 deploy needs no env vars and no secrets.
 
+## Google login & saved presets (optional)
+
+Browsing and searching are **anonymous — no login, ever**. Google sign-in only unlocks
+**presets**: saving the entire current view (search, provider/type filters, sort, tier mode,
+workload calculator, and the 4-way comparison set) under your Google identity, synced
+across devices. Example: save "Daily 3" comparing Qwen3.7 Flash + GLM-5.3-Flash +
+DeepSeek V4 Flash 0731 — one click re-applies everything and opens the comparison.
+
+```
+Browser ── Google ID token (JWT) ──▶ /api/presets (Vercel function)
+   │                                  ├─ signature verified against Google JWKS
+   │                                  ├─ aud/iss/exp checks (server-side)
+   │                                  └─ Vercel KV: preset:<sub> → your presets
+   └─ presets cached locally for offline reads
+```
+
+### One-time setup (~5 minutes)
+
+1. **Google OAuth Client ID** — [console.cloud.google.com/apis/credentials](https://console.cloud.google.com/apis/credentials)
+   → Create credentials → OAuth client ID → **Web application**. Authorized JavaScript origins:
+   - `https://aipricechart.vercel.app`
+   - `http://localhost:4173`
+2. **Paste the client ID** into `client-id.js` (it's a public identifier, safe to commit) → push → auto-deploys.
+3. **Vercel env**: Project → Settings → Environment Variables → `GOOGLE_CLIENT_ID` = same ID (the API uses it to reject tokens minted for other apps).
+4. **Storage**: Project → Storage → Create Database → **KV (Upstash)** → connect to the project. The `KV_REST_API_URL` / `KV_REST_API_TOKEN` env vars are injected automatically.
+
+Until steps 1–2 are done the site simply stays anonymous-only (no sign-in button).
+If KV isn't configured, presets still save **locally on that device** (graceful fallback).
+
+Privacy: only your Google name, email and avatar URL are used for the UI; the server
+stores just `preset:<sub>` → your saved views. Signing out clears the session.
+
 ## Price semantics
 
 - **Priced** — first-party API rate (input / cached / output, USD per 1M tokens)

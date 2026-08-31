@@ -10,6 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <script src="data/models.js"></script>
+  <script src="client-id.js"></script>
+  <script src="app.js" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -21,6 +24,14 @@
       </div>
     </div>
     <div class="topbar-actions">
+      <div id="authArea" class="auth-area" title="Sign in to sync your saved filter presets across devices">
+        <div id="gBtnWrap" class="gbtn-wrap" hidden></div>
+        <div id="userChip" class="user-chip" hidden>
+          <img id="userPic" alt="" width="24" height="24" />
+          <span id="userName"></span>
+          <button id="signOutBtn" class="ghost-mini" title="Sign out">✕</button>
+        </div>
+      </div>
       <button id="csvBtn" class="btn ghost" title="Export the current view as CSV">⬇ CSV</button>
       <button id="themeBtn" class="btn ghost" title="Toggle light / dark theme" aria-label="Toggle theme">🌙</button>
     </div>
@@ -29,6 +40,13 @@
   <main class="wrap">
     <!-- Summary stats -->
     <section id="stats" class="stats" aria-label="Dataset summary"></section>
+
+    <!-- Saved presets (sign in to sync) -->
+    <section id="presetsBar" class="presets-bar" aria-label="Saved presets" hidden>
+      <span class="presets-label">Presets</span>
+      <div id="presetChips" class="preset-chips"></div>
+      <button id="savePresetBtn" class="btn ghost mini-btn" title="Save the current filters + comparison as a preset">💾 Save view</button>
+    </section>
 
     <!-- Controls -->
     <section class="controls" aria-label="Filters">
@@ -141,8 +159,5 @@
     <div id="sources" class="sources"></div>
     <p>Built as a static, dependency-free app · data snapshot 2026-08-30 · prices change often — verify with providers.</p>
   </footer>
-
-  <script src="data/models.js"></script>
-  <script src="app.js"></script>
 </body>
 </html>

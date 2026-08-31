@@ -27,6 +27,8 @@ const state = {
   compare: new Set(),        // model ids (max 4)
   logScale: false,
   timeTier: "current",       // current | peak | off-peak
+  user: null,                // {sub, name, email, picture} — set only after Google sign-in
+  presets: [],               // saved views: [{id, name, view}]
 };
 
 /* ---------------- helpers ---------------- */
@@ -567,7 +569,239 @@ function renderCurrent() {
 
 /* ---------------- init ---------------- */
 
+/* ================= Presets + Google sign-in =================
+   Browsing/searching is anonymous and always available.
+   Google sign-in only unlocks SAVING presets (cross-device sync).
+   Presets store the whole view: search, filters, sort, tier mode,
+   workload numbers and the current 4-way comparison set. */
+
+function captureView() {
+  return {
+    q: $("#search").value,
+    provs: [...state.providers],
+    type: state.type,
+    priced: $("#pricedOnly").checked,
+    sort: state.sort, dir: state.dir,
+    tier: state.timeTier,
+    calcIn: state.calcIn, calcOut: state.calcOut, calcReqs: state.calcReqs,
+    cmp: [...state.compare],
+  };
+}
+
+function applyView(v) {
+  if (!v || typeof v !== "object") return;
+  $("#search").value = v.q || "";
+  $("#search").dispatchEvent(new Event("input", { bubbles: true }));
+  const known = allProviders();
+  state.providers = new Set(Array.isArray(v.provs) ? v.provs.filter((p) => known.includes(p)) : []);
+  state.type = ["all", "Proprietary", "Open Weight"].includes(v.type) ? v.type : "all";
+  document.querySelectorAll("#typeSeg .seg-btn").forEach((b) => b.classList.toggle("active", b.dataset.type === state.type));
+  $("#pricedOnly").checked = v.priced !== false;
+  if (["blended", "input", "output", "ctx", "score"].includes(v.sort)) state.sort = v.sort;
+  state.dir = v.dir === "desc" ? "desc" : "asc";
+  if (["current", "peak", "off-peak"].includes(v.tier)) {
+    state.timeTier = v.tier;
+    document.querySelectorAll("#tierSeg .seg-btn").forEach((b) => b.classList.toggle("active", b.dataset.tier === v.tier));
+  }
+  ["calcIn", "calcOut", "calcReqs"].forEach((k, i) => {
+    const ids = ["calcIn", "calcOut", "calcReqs"];
+    if (v[k] != null && v[k] > 0) { state[k] = v[k]; $("#" + ids[i]).value = v[k]; }
+  });
+  const ids = new Set(MODELS.map((m) => m.id));
+  state.compare = new Set((v.cmp || []).filter((id) => ids.has(id)).slice(0, 4));
+  renderTray(); renderCurrent();
+  if (state.compare.size >= 2) compareModal();
+}
+
+function toast(msg, ms = 3200) {
+  let t = document.getElementById("toast");
+  if (!t) { t = el("div", "toast"); t.id = "toast"; document.body.append(t); }
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.classList.remove("show"), ms);
+}
+
+function renderAuthUI() {
+  const wrap = $("#gBtnWrap"), chip = $("#userChip");
+  if (state.user) {
+    wrap.hidden = true;
+    chip.hidden = false;
+    $("#userPic").src = state.user.picture || "";
+    $("#userName").textContent = (state.user.name || "").split(" ")[0] || "you";
+  } else {
+    chip.hidden = true;
+    wrap.hidden = !window.GOOGLE_CLIENT_ID || !window.google?.accounts?.id;
+  }
+}
+
+function jwtPayload(token) {
+  try {
+    const p = token.split(".")[1];
+    return JSON.parse(atob(p.replace(/-/g, "+").replace(/_/g, "/")));
+  } catch { return null; }
+}
+
+function onGoogleCredential(resp) {
+  const claims = jwtPayload(resp.credential);
+  if (!claims || !claims.sub) return toast("Google sign-in failed");
+  state.user = { sub: claims.sub, name: claims.name || "", email: claims.email || "", picture: claims.picture || "" };
+  sessionStorage.setItem("aipc.token", resp.credential);
+  localStorage.setItem("aipc.user", JSON.stringify(state.user));
+  renderAuthUI();
+  toast(`Signed in as ${state.user.name || state.user.email} — presets will sync`);
+  loadPresets();
+}
+
+function initAuth() {
+  $("#signOutBtn").addEventListener("click", () => {
+    try { window.google?.accounts?.id?.disableAutoSelect(); } catch { /* not loaded */ }
+    state.user = null; state.presets = [];
+    sessionStorage.removeItem("aipc.token");
+    localStorage.removeItem("aipc.user");
+    localStorage.removeItem("aipc.presetsCache");
+    renderAuthUI(); renderPresetChips();
+    toast("Signed out — browsing stays fully available");
+  });
+
+  // restore profile from a previous visit on this device
+  const cached = localStorage.getItem("aipc.user");
+  if (cached) { try { state.user = JSON.parse(cached); } catch { /* ignore */ } }
+  const cachedPresets = localStorage.getItem("aipc.presetsCache");
+  if (cachedPresets) { try { state.presets = JSON.parse(cachedPresets); } catch { /* ignore */ } }
+  renderAuthUI(); renderPresetChips();
+
+  if (!window.GOOGLE_CLIENT_ID) return; // anonymous-only deployment
+  const s = document.createElement("script");
+  s.src = "https://accounts.google.com/gsi/client";
+  s.async = true; s.defer = true;
+  s.onload = () => {
+    window.google.accounts.id.initialize({
+      client_id: window.GOOGLE_CLIENT_ID,
+      callback: onGoogleCredential,
+      auto_select: false,
+    });
+    renderAuthUI();
+  };
+  document.head.append(s);
+}
+
+async function apiPresets(method, body) {
+  const token = sessionStorage.getItem("aipc.token");
+  if (!token) throw new Error("not signed in");
+  const res = await fetch("/api/presets", {
+    method,
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (res.status === 401) { // token expired (1h) — force re-auth
+    signOutQuiet();
+    throw new Error("session expired — please sign in again");
+  }
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok || !j.ok) throw new Error(j.error || `API ${res.status}`);
+  return j;
+}
+
+function signOutQuiet() {
+  try { window.google?.accounts?.id?.disableAutoSelect(); } catch { /* not loaded */ }
+  state.user = null;
+  sessionStorage.removeItem("aipc.token");
+  localStorage.removeItem("aipc.user");
+  renderAuthUI();
+}
+
+function cachePresets() {
+  localStorage.setItem("aipc.presetsCache", JSON.stringify(state.presets));
+}
+
+async function loadPresets() {
+  try {
+    const j = await apiPresets("GET");
+    state.presets = Array.isArray(j.presets) ? j.presets : [];
+    cachePresets(); renderPresetChips();
+  } catch (e) {
+    renderPresetChips(); // fall back to cached/local presets
+    if (!/not signed in/.test(e.message)) toast(`Preset sync unavailable: ${e.message}`);
+  }
+}
+
+function localPresetsSave() {
+  cachePresets();
+  renderPresetChips();
+  toast("Saved on this device (cloud sync unavailable here)");
+}
+
+async function savePreset() {
+  if (!window.GOOGLE_CLIENT_ID) return toast("Sign-in is not configured on this deployment");
+  if (!state.user) {
+    // prompt sign-in: use One Tap if available, otherwise make the button pulse
+    try {
+      window.google?.accounts?.id?.prompt((n) => {
+        if (n.isNotDisplayed() || n.isSkippedMoment()) {
+          toast("Use the “Sign in with Google” button (top right) first");
+          $("#gBtnWrap").classList.add("pulse");
+          setTimeout(() => $("#gBtnWrap")?.classList.remove("pulse"), 4000);
+        }
+      });
+    } catch { /* not loaded */ }
+    return;
+  }
+  const existing = state.presets.map((p) => p.name);
+  const def = `My compare ${state.presets.length + 1}`;
+  const name = prompt("Preset name (saves search, filters, sort, calculator and comparison):", existing[existing.length - 1] || def);
+  if (name == null || !name.trim()) return;
+  const preset = { id: "p_" + Date.now().toString(36), name: name.trim().slice(0, 60), view: captureView() };
+  const prev = state.presets;
+  state.presets = [...state.presets.filter((p) => p.name !== preset.name), preset].slice(0, 50);
+  renderPresetChips();
+  try {
+    await apiPresets("PUT", { presets: state.presets });
+    cachePresets();
+    toast(`Preset "${preset.name}" saved — click its chip to restore`);
+  } catch (e) {
+    if (/not configured|Failed to fetch|NetworkError/i.test(e.message)) return localPresetsSave();
+    state.presets = prev; renderPresetChips();
+    toast(`Save failed: ${e.message}`);
+  }
+}
+
+function renderPresetChips() {
+  const bar = $("#presetsBar"), chips = $("#presetChips");
+  const show = state.user || state.presets.length > 0;
+  bar.hidden = !show;
+  chips.innerHTML = "";
+  for (const p of state.presets) {
+    const chip = el("button", "chip preset-chip", "");
+    chip.title = "Apply this saved view";
+    chip.innerHTML = `<span>${escapeHtml(p.name)}</span><span class="chip-x" title="Delete preset">✕</span>`;
+    chip.addEventListener("click", (ev) => {
+      if (ev.target.classList.contains("chip-x")) {
+        state.presets = state.presets.filter((x) => x.id !== p.id);
+        if (state.user) apiPresets("PUT", { presets: state.presets }).then(cachePresets).catch(() => localPresetsSave());
+        else cachePresets();
+        renderPresetChips();
+        toast(`Deleted "${p.name}"`);
+      } else {
+        applyView(p.view);
+        toast(`Applied "${p.name}"`);
+      }
+    });
+    chips.append(chip);
+  }
+  if (!state.presets.length && state.user) {
+    chips.append(el("span", "sub", "No presets yet — set up a view and click 💾 Save view"));
+  }
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
 function init() {
+  // auth + presets UI
+  $("#savePresetBtn").addEventListener("click", savePreset);
+  initAuth();
+
   // theme
   applyTheme(localStorage.getItem(LS.theme) || "dark");
 
