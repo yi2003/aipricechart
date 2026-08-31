@@ -115,7 +115,12 @@ function filtered() {
   let rows = MODELS.filter((m) => {
     if (q && !(m.name.toLowerCase().includes(q) || m.provider.toLowerCase().includes(q))) return false;
     if (state.providers.size && !state.providers.has(m.provider)) return false;
-    if (state.type !== "all" && m.type !== state.type) return false;
+    if (state.type !== "all") {
+      const isOpen = m.type === "Open Weight";
+      // API bucket = every hosted-API model, incl. non-standard statuses like "Pending"
+      if (state.type === "Proprietary" && (isOpen || m.type === "Unknown")) return false;
+      if (state.type === "Open Weight" && !isOpen) return false;
+    }
     if (state.pricedOnly && (m.input == null || isSelfHost(m))) return false;
     return true;
   });
@@ -240,6 +245,7 @@ function renderTable() {
     const vt = variantTag(m.variant);
     if (vt) sub.append(el("span", badgeClass(m.variant), vt));
     if (m.type === "Open Weight") sub.append(el("span", "tag open", "open"));
+    if (m.type === "Pending") sub.append(el("span", "tag pro", "pending"));
     if (m.free) sub.append(el("span", "tag open", "free api"));
     if (m.timeTiers && e.tier) sub.append(el("span", e.tier === "peak" ? "tag peak" : "tag offpeak", e.tier === "peak" ? "peak now" : "off-peak −50%"));
     if (sub.childNodes.length) tdN.append(sub);

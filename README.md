@@ -64,6 +64,38 @@ Refresh response example:
   "changes": [ { "id": "glm-5-3", "field": "input", "from": 0, "to": 1.4 }, … ] }
 ```
 
+### One command for the whole chain: `npm run sync`
+
+```bash
+npm run sync   # refresh → validate → commit data/models.js → push (Vercel redeploys)
+```
+
+Validation errors abort the push, so broken data can never reach the deployed site.
+Point your cron at this instead of the raw curl:
+
+```
+0 6 * * * cd /home/lenovo/others/aiPriceChart && /usr/bin/npm run sync >> logs/refresh.log 2>&1
+```
+
+## Deploy to Vercel
+
+The UI is fully static — **zero config**: [vercel.com/new](https://vercel.com/new) → import
+`yi2003/aipricechart` → Deploy. Every `git push` auto-deploys the latest prices.
+
+Recommended architecture:
+
+```
+your machine (cron 06:00)          GitHub                Vercel
+npm run sync ──────────────────▶ models.js ──auto──▶ static site (free)
+  │  refresh API (local, 🔒 token)
+  └─ validation gate blocks bad data
+```
+
+The refresh API (`/api/refresh`) intentionally stays **local-only**: serverless filesystems
+are read-only, so a serverless refresh couldn't persist `data/models.js` — and keeping it
+on your machine means the secret token and scraping logic never leave it. The static
+deploy needs no env vars and no secrets.
+
 ## Price semantics
 
 - **Priced** — first-party API rate (input / cached / output, USD per 1M tokens)

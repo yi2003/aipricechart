@@ -6,6 +6,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "token": "node token.js"
+    "token": "node token.js",
+    "sync": "bash scripts/sync.sh"
   }
 }
