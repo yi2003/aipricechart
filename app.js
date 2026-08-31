@@ -631,15 +631,10 @@ function renderAuthUI() {
     return;
   }
   chip.hidden = true;
-  if (!window.GOOGLE_CLIENT_ID) {
-    // deployment without a Google Client ID: show a plain button so the
-    // feature is discoverable; clicking it explains the one-time setup
-    fallback.hidden = false; wrap.hidden = true;
-    return;
-  }
-  // configured: real Google button once the GIS script has loaded
-  fallback.hidden = true;
-  wrap.hidden = !window.google?.accounts?.id;
+  // the real Google button exists only after the GIS script renders its iframe
+  const realButtonReady = !!wrap.querySelector("iframe");
+  wrap.hidden = !realButtonReady;
+  fallback.hidden = realButtonReady;
 }
 
 function jwtPayload(token) {
@@ -671,11 +666,14 @@ function initAuth() {
     toast("Signed out — browsing stays fully available");
   });
   $("#signInFallback").addEventListener("click", () => {
+    if (window.google?.accounts?.id) {
+      try { return window.google.accounts.id.prompt(); } catch { /* fall through */ }
+    }
     if (!window.GOOGLE_CLIENT_ID) {
       toast("Google sign-in needs a one-time setup: create an OAuth Client ID and put it in client-id.js — see README “Google login & saved presets”", 6000);
-      return;
+    } else {
+      toast("Google script hasn't loaded — check your network / ad blocker and retry", 5000);
     }
-    try { window.google?.accounts?.id?.prompt(); } catch { /* GIS not loaded yet */ }
   });
 
   // restore profile from a previous visit on this device
@@ -690,13 +688,23 @@ function initAuth() {
   s.src = "https://accounts.google.com/gsi/client";
   s.async = true; s.defer = true;
   s.onload = () => {
-    window.google.accounts.id.initialize({
-      client_id: window.GOOGLE_CLIENT_ID,
-      callback: onGoogleCredential,
-      auto_select: false,
-    });
+    try {
+      window.google.accounts.id.initialize({
+        client_id: window.GOOGLE_CLIENT_ID,
+        callback: onGoogleCredential,
+        auto_select: false,
+      });
+      // THE actual button — without this the container stays an empty div
+      window.google.accounts.id.renderButton($("#gBtnWrap"), {
+        theme: "outline", size: "medium", text: "signin_with",
+        shape: "pill", width: 128, logo_alignment: "left",
+      });
+    } catch (e) {
+      console.error("GIS init failed:", e);
+    }
     renderAuthUI();
   };
+  s.onerror = () => { renderAuthUI(); toast("Google sign-in script blocked (ad blocker / network) — presets still work on this device", 5000); };
   document.head.append(s);
 }
 
