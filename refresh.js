@@ -216,6 +216,62 @@ async function scrapeDeepSeek() {
   return { overrides, notes, url: DEEPSEEK_PRICING_URL };
 }
 
+/* ---------------- OpenRouter host prices ----------------
+   Fills the "how do I actually run this open-weight model?" gap:
+   curated open-weight / unpriced models get a real hosted rate from the
+   OpenRouter API (benchlmId → openrouter model id). Already-priced models
+   (first-party known) only get a `hosts` entry for display, no field change. */
+
+const OR_PRICING_URL = "https://openrouter.ai/api/v1/models";
+const OR_MAP = {
+  "llama-4-maverick": "meta-llama/llama-4-maverick",
+  "llama-4-scout": "meta-llama/llama-4-scout",
+  "qwen3-8-max": "qwen/qwen3.8-max",
+  "qwen3-7-flash": "qwen/qwen3.7-flash",
+  "qwen3-8-flash": "qwen/qwen3.8-flash",
+  "gpt-oss-120b": "openai/gpt-oss-120b",
+  "gpt-oss-20b": "openai/gpt-oss-20b",
+  "qwen3-235b-2507": "qwen/qwen3-235b-a22b-2507",
+  "qwen3-235b-2507-reasoning": "qwen/qwen3-235b-a22b-thinking-2507",
+  "deepseek-r1": "deepseek/deepseek-r1",
+};
+
+async function scrapeOpenRouter() {
+  const res = await fetch(OR_PRICING_URL, { headers: { accept: "application/json" } });
+  if (!res.ok) throw new Error(`OpenRouter API HTTP ${res.status}`);
+  const j = await res.json();
+  const all = new Map((j.data || []).map((m) => [m.id, m]));
+  const hosts = {};
+  const notes = [];
+  for (const [benchId, orId] of Object.entries(OR_MAP)) {
+    const m = all.get(orId);
+    if (!m) continue;
+    const input = Math.round((parseFloat(m.pricing?.prompt) || 0) * 1e6 * 10000) / 10000;
+    const output = Math.round((parseFloat(m.pricing?.completion) || 0) * 1e6 * 10000) / 10000;
+    hosts[benchId] = { name: "OpenRouter", input, output, url: `https://openrouter.ai/${orId}` };
+    notes.push(`${benchId}: OR $${input}/$${output}`);
+  }
+  return { hosts, notes, url: OR_PRICING_URL, count: Object.keys(hosts).length };
+}
+
+function applyOpenRouterHosts(models, hosts) {
+  let filled = 0, linked = 0;
+  const byId = new Map(models.map((m) => [m.id, m]));
+  for (const [benchId, h] of Object.entries(hosts || {})) {
+    const m = byId.get(benchId);
+    if (!m) continue;
+    m.hosts = [{ name: "OpenRouter", input: h.input, output: h.output, url: h.url }];
+    const lacksPrice = (m.input === 0 && m.output === 0 && !m.free) || (m.input == null && m.output == null);
+    if (lacksPrice) {
+      m.input = h.input; m.output = h.output; m.cached = null;
+      m.source = m.source ? `${m.source} + OpenRouter` : "OpenRouter";
+      m.note = `Hosted on OpenRouter at $${h.input} in / $${h.output} out per 1M tokens (no first-party API rate in the dataset). ${m.note || ""}`.trim();
+      filled++;
+    } else linked++;
+  }
+  return { filled, linked };
+}
+
 /* ---------------- static fallback overrides ---------------- */
 
 function loadStaticOverrides() {
@@ -267,6 +323,15 @@ function applyOverrides(models, ov) {
       models.push(rec2);
       byId.set(rec.id, rec2);
     }
+    applied++;
+  }
+  // deprecated: flag retired generations (still priced/listed in the aggregator,
+  // but no longer "current"). The UI hides them by default; toggle to reveal.
+  for (const slug of ov.deprecated || []) {
+    const m = byId.get(slug);
+    if (!m) continue;
+    m.deprecated = true;
+    if (!m.note) m.note = "Retired generation — no longer the provider's current lineup";
     applied++;
   }
   return applied;
@@ -430,13 +495,29 @@ async function runRefresh(reason = "manual", opts = {}) {
       bySlug[slug] = { ...(bySlug[slug] || {}), ...patch };
     }
 
+    // 3b) OpenRouter hosted rates (tolerated failure — static data is fine)
+    const orHosts = {};
+    try {
+      const or = await scrapeOpenRouter();
+      Object.assign(orHosts, or.hosts);
+      parsers.openrouter = { ok: true, models: or.count, notes: or.notes };
+      providerSources.push({ name: "OpenRouter hosted prices", url: or.url });
+      log.push(`openrouter OK: ${or.notes.join("; ")}`);
+    } catch (e) {
+      parsers.openrouter = { ok: false, error: String(e.message || e) };
+      log.push(`openrouter FAILED: ${e.message} — no host-price enrichment`);
+    }
+
     // 4) apply + write atomically (with backup)
     const before = safeReadModels();
     const applied = applyOverrides(models, {
       bySlug,
       nullPrices: stat.nullPrices || [],
       addModels: stat.addModels || [],
+      deprecated: stat.deprecated || [],
     });
+    const orResult = applyOpenRouterHosts(models, orHosts);
+    log.push(`openrouter hosts: ${orResult.filled} prices filled · ${orResult.linked} rows linked`);
 
     models = models.filter((m) => m.input != null || m.output != null || m.type === "Open Weight");
     models.sort((a, b) =>

@@ -18,6 +18,7 @@
     { "src": "/(server|refresh|token)\\.js", "status": 404 },
     { "src": "/scripts/(.*)", "status": 404 },
     { "src": "/\\.refresh-token", "status": 404 },
+    { "src": "^/(about|docs|blog|privacy|terms)(/.*)?$", "status": 404 },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]

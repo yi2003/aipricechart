@@ -208,6 +208,21 @@ function priceCell(td, v, max, prefix = "") {
   }
 }
 
+/* move the ▲/▼ sort indicator to the currently active column */
+function syncSortArrows() {
+  const tbl = $("#priceTable");
+  if (!tbl) return;
+  tbl.querySelectorAll("th.sortable").forEach((th) => {
+    th.querySelector(".arr")?.remove();
+    th.removeAttribute("aria-sort");
+  });
+  const th = tbl.querySelector(`th[data-key="${state.sortKey}"]`);
+  if (th) {
+    th.append(el("span", "arr", state.sortDir === 1 ? "▲" : "▼"));
+    th.setAttribute("aria-sort", state.sortDir === 1 ? "ascending" : "descending");
+  }
+}
+
 function renderTable() {
   const rows = filtered();
   const max = maxVals(rows);
@@ -263,6 +278,14 @@ function renderTable() {
     pWrap.append(dot);
     pWrap.append(el("span", "", m.provider));
     tdP.append(pWrap);
+    if (Array.isArray(m.hosts) && m.hosts.length) {
+      const h = m.hosts[0];
+      const hl = el("span", "host-line");
+      const ha = el("a", "", `${h.name} ${money(h.input)}/${money(h.output)}`);
+      ha.href = h.url; ha.target = "_blank"; ha.rel = "noopener";
+      hl.append(ha);
+      tdP.append(hl);
+    }
     tr.append(tdP);
 
     // context
@@ -364,6 +387,24 @@ function renderChart() {
 
 /* ---------------- detail modal ---------------- */
 
+// provider official pricing pages (fallback; parsers can set m.officialUrl too)
+const OFFICIAL_PRICING = {
+  "OpenAI": "https://platform.openai.com/docs/pricing",
+  "Anthropic": "https://docs.anthropic.com/en/docs/about-claude/pricing",
+  "Google": "https://ai.google.dev/gemini-api/docs/pricing",
+  "xAI": "https://docs.x.ai/docs/models",
+  "DeepSeek": "https://api-docs.deepseek.com/quick_start/pricing",
+  "Z.AI": "https://docs.z.ai/guides/overview/pricing",
+  "Moonshot AI": "https://platform.moonshot.ai/docs/pricing/chat",
+  "Alibaba": "https://www.alibabacloud.com/help/en/model-studio/getting-started/models",
+  "Mistral": "https://mistral.ai/pricing",
+  "Meta": "https://www.llama.com/",
+  "IBM": "https://www.ibm.com/granite",
+  "Cohere": "https://cohere.com/pricing",
+  "Nous Research": "https://openrouter.ai/",
+};
+const officialUrl = (m) => m.officialUrl || OFFICIAL_PRICING[m.provider] || null;
+
 function showDetail(id) {
   const m = MODELS.find((x) => x.id === id);
   if (!m) return;
@@ -400,6 +441,12 @@ function showDetail(id) {
   addKV("License / type", m.type);
   if (m.variant) addKV("Variant", m.variant);
   if (m.score != null) addKV("BenchLM score †", m.score.toFixed(1));
+  if (Array.isArray(m.hosts) && m.hosts.length) {
+    addKV("Also hosted on", m.hosts.map((h) =>
+      `${h.name}: ${money(h.input)} in / ${money(h.output)} out` +
+      ` <a href="${h.url}" target="_blank" rel="noopener">open ↗</a>`).join("<br>"));
+  }
+  if (m.deprecated) addKV("Status", '<span class="tag open">deprecated / retired</span>');
   if (m.note) addKV("Note", m.note);
   addKV("Dataset", `BenchLM ${DATA.period} snapshot`);
   body.append(dl);
@@ -416,6 +463,13 @@ function showDetail(id) {
   const a = el("a", "", "View on BenchLM.ai ↗");
   a.href = m.url; a.target = "_blank"; a.rel = "noopener";
   links.append(a);
+  const off = officialUrl(m);
+  if (off) {
+    const oa = el("a", "", "Official pricing page ↗");
+    oa.href = off; oa.target = "_blank"; oa.rel = "noopener";
+    links.append(document.createTextNode(" · "));
+    links.append(oa);
+  }
   body.append(links);
 
   openModal();
@@ -669,7 +723,7 @@ function applyView(v) {
   document.querySelectorAll("#typeSeg .seg-btn").forEach((b) => b.classList.toggle("active", b.dataset.type === state.type));
   $("#pricedOnly").checked = v.priced !== false;
   if ($("#hideDeprecated")) $("#hideDeprecated").checked = v.hideDep !== false;
-  if (["blended", "input", "output", "ctx", "score"].includes(v.sort)) state.sortKey = v.sort;
+  if (["blended", "input", "output", "ctx", "score", "monthly"].includes(v.sort)) state.sortKey = v.sort;
   state.sortDir = v.dir === "desc" ? -1 : 1;
   if (["current", "peak", "off-peak"].includes(v.tier)) {
     state.timeTier = v.tier;
@@ -682,6 +736,7 @@ function applyView(v) {
   const ids = new Set(MODELS.map((m) => m.id));
   state.compare = new Set((v.cmp || []).filter((id) => ids.has(id)).slice(0, 4));
   renderTray(); renderCurrent();
+  syncSortArrows();
   if (state.compare.size >= 2) compareModal();
 }
 
@@ -703,6 +758,14 @@ function renderAuthUI() {
     return;
   }
   chip.hidden = true;
+  // The full-width Google button (128px iframe) clips the title on phones —
+  // on narrow screens show our compact ghost button instead (it calls prompt()).
+  const narrow = window.matchMedia && window.matchMedia("(max-width: 600px)").matches;
+  if (narrow) {
+    fallback.hidden = false;
+    wrap.hidden = true;
+    return;
+  }
   // the real Google button exists only after the GIS script renders its iframe
   const realButtonReady = !!wrap.querySelector("iframe");
   wrap.hidden = !realButtonReady;
@@ -851,8 +914,8 @@ async function savePreset() {
 
 function renderPresetChips() {
   const bar = $("#presetsBar"), chips = $("#presetChips");
-  const show = state.user || state.presets.length > 0;
-  bar.hidden = !show;
+  // ALWAYS visible: anonymous local save must be discoverable (Save view button lives here)
+  bar.hidden = false;
   chips.innerHTML = "";
   for (const p of state.presets) {
     const chip = el("button", "chip preset-chip", "");
@@ -872,8 +935,10 @@ function renderPresetChips() {
     });
     chips.append(chip);
   }
-  if (!state.presets.length && state.user) {
-    chips.append(el("span", "sub", "No presets yet — set up a view and click 💾 Save view"));
+  if (!state.presets.length) {
+    chips.append(el("span", "sub", state.user
+      ? "No presets yet — set up a view and click 💾 Save view"
+      : "Save your current view — works without an account (sign in to sync across devices)"));
   }
 }
 
@@ -1006,6 +1071,9 @@ function init() {
   }
   // re-render every minute so "Now" pricing stays accurate while the page is open
   setInterval(() => { if (state.timeTier === "current") renderCurrent(); }, 60000);
+  // cross the 600px breakpoint → swap Google button ↔ compact sign-in
+  const mq = window.matchMedia && window.matchMedia("(max-width: 600px)");
+  if (mq && mq.addEventListener) mq.addEventListener("change", () => renderAuthUI());
 
   // sorting
   document.querySelectorAll("#priceTable th.sortable").forEach((th) => {
@@ -1013,21 +1081,11 @@ function init() {
       const key = th.dataset.key;
       if (state.sortKey === key) state.sortDir *= -1;
       else { state.sortKey = key; state.sortDir = 1; }
-      document.querySelectorAll("#priceTable th.sortable").forEach((x) => {
-        const a = x.querySelector(".arr"); if (a) a.remove();
-      });
-      const arr = el("span", "arr", state.sortDir === 1 ? "▲" : "▼");
-      th.append(arr);
-      th.setAttribute("aria-sort", state.sortDir === 1 ? "ascending" : "descending");
+      syncSortArrows();
       renderTable();
     });
   });
-  // default sort arrow (respects URL/preset-driven direction)
-  const defaultTh = document.querySelector(`#priceTable th[data-key="${state.sortKey}"]`);
-  if (defaultTh) {
-    defaultTh.append(el("span", "arr", state.sortDir === 1 ? "▲" : "▼"));
-    defaultTh.setAttribute("aria-sort", state.sortDir === 1 ? "ascending" : "descending");
-  }
+  syncSortArrows(); // reflects URL/preset-driven sort at load
 
   // tray + modal
   $("#compareBtn").addEventListener("click", compareModal);
