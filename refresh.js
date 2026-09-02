@@ -265,7 +265,8 @@ function applyOpenRouterHosts(models, hosts) {
     if (lacksPrice) {
       m.input = h.input; m.output = h.output; m.cached = null;
       m.source = m.source ? `${m.source} + OpenRouter` : "OpenRouter";
-      m.note = `Hosted on OpenRouter at $${h.input} in / $${h.output} out per 1M tokens (no first-party API rate in the dataset). ${m.note || ""}`.trim();
+      m.pricedVia = "OpenRouter"; // honest marker: these are RESELLER rates, not first-party
+      m.note = `Reseller rate via OpenRouter: $${h.input} in / $${h.output} out per 1M tokens (no first-party API price in the dataset — OpenRouter hosts the open weights). ${m.note || ""}`.trim();
       filled++;
     } else linked++;
   }

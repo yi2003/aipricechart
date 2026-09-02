@@ -145,6 +145,9 @@
       },
       "note": "Time-tiered API pricing — app shows the rate effective right now. Peak hours 01:00–04:00 & 06:00–10:00 UTC, Mon–Fri; off-peak is half. Verified from DeepSeek official docs",
       "source": "DeepSeek docs"
+    },
+    "llama-4-behemoth": {
+      "note": "Open weights — no hosted API rate found in the dataset (OpenRouter checked). Self-host to run."
     }
   },
   "nullPrices": [

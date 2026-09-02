@@ -265,6 +265,7 @@ function renderTable() {
     if (vt) sub.append(el("span", badgeClass(m.variant), vt));
     if (m.type === "Open Weight") sub.append(el("span", "tag open", "open"));
     if (m.type === "Pending") sub.append(el("span", "tag pro", "pending"));
+    if (m.pricedVia) sub.append(el("span", "tag reseller", `via ${m.pricedVia}`));
     if (m.free) sub.append(el("span", "tag open", "free api"));
     if (m.timeTiers && e.tier) sub.append(el("span", e.tier === "peak" ? "tag peak" : "tag offpeak", e.tier === "peak" ? "peak now" : "off-peak −50%"));
     if (sub.childNodes.length) tdN.append(sub);
@@ -505,7 +506,12 @@ function compareModal() {
     ["BenchLM score †", (m) => m.score == null ? "—" : m.score.toFixed(1), (m) => m.score, false],
     ["You / mo", (m) => { if (isSelfHost(m)) return "self-host"; const c = monthlyCost(m); return c == null ? "—" : monthly(c); },
       (m) => isSelfHost(m) ? null : monthlyCost(m), true],
-    ["Link", (m) => `<a href="${m.url}" target="_blank" rel="noopener">BenchLM ↗</a>`, () => null],
+    ["Link", (m) => {
+      let h = `<a href="${m.url}" target="_blank" rel="noopener">BenchLM ↗</a>`;
+      const off = officialUrl(m);
+      if (off) h += ` <span class="sub">·</span> <a href="${off}" target="_blank" rel="noopener">official ↗</a>`;
+      return h;
+    }, () => null],
   ];
 
   const tbody = el("tbody");
@@ -957,7 +963,7 @@ function init() {
   // dataset meta — single freshness source (badge, footer, meta all from DATA.asOf)
   $("#asOfBadge").textContent = `data: ${DATA.asOf}`;
   const fd = document.getElementById("footerDate");
-  if (fd) fd.textContent = `data snapshot ${DATA.asOf} · refreshed ${DATA.period ? "from " + DATA.period : ""}· prices change often`;
+  if (fd) fd.textContent = `data snapshot ${DATA.asOf} · ${DATA.period ? "refreshed from " + DATA.period : "prices refresh automatically"} · prices change often`;
   const md = document.querySelector('meta[name="description"]');
   if (md) md.content = `Compare current AI/LLM API prices — input, output, cached and blended per 1M tokens across 60+ providers. ${DATA.models.length} models tracked, snapshot ${DATA.asOf}.`;
 
