@@ -239,6 +239,7 @@ function applyOverrides(models, ov) {
       if (patch[k] !== undefined) m[k] = patch[k];
     }
     if (patch.free !== undefined) m.free = patch.free;
+    if (patch.deprecated !== undefined) m.deprecated = patch.deprecated;
     if (patch.note) m.note = patch.note;
     applied++;
   }
@@ -246,6 +247,7 @@ function applyOverrides(models, ov) {
     const m = byId.get(slug);
     if (!m) continue;
     m.input = m.cached = m.output = null;
+    m.deprecated = true;
     m.note = "Deprecated / no longer listed by provider";
     applied++;
   }

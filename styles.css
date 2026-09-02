@@ -9,6 +9,8 @@
   --glass-strong: rgba(255, 255, 255, .055);
   --line: rgba(255, 255, 255, .07);
   --line-strong: rgba(255, 255, 255, .13);
+  --border: var(--line);       /* legacy aliases used by chips/toasts/user-chip */
+  --panel: rgba(255, 255, 255, .04);
   --text: #eef1f8;
   --muted: #96a0b5;
   --faint: #6b7590;
@@ -39,6 +41,8 @@ html[data-theme="light"] {
   --glass-strong: #ffffff;
   --line: rgba(15, 23, 42, .09);
   --line-strong: rgba(15, 23, 42, .16);
+  --border: var(--line);
+  --panel: #ffffff;
   --text: #101828;
   --muted: #55617a;
   --faint: #8b96ad;
@@ -330,22 +334,23 @@ td.sh { color: var(--faint); font-family: var(--sans); font-style: italic; font-
 
 /* ================= chart ================= */
 .chart-note { color: var(--muted); font-size: 12.5px; margin: 0 0 14px; }
-.chart { display: grid; gap: 6px; }
+.chart { display: grid; gap: 6px; min-width: 0; }
 .chart-row {
-  display: grid; grid-template-columns: minmax(140px, 250px) 1fr 110px;
-  gap: 14px; align-items: center; cursor: pointer; padding: 4px 8px; border-radius: 10px;
-  transition: background .12s;
+  display: grid; grid-template-columns: minmax(110px, 220px) minmax(0, 1fr) 105px;
+  gap: 12px; align-items: center; cursor: pointer; padding: 4px 8px; border-radius: 10px;
+  transition: background .12s; min-width: 0;
 }
 .chart-row:hover { background: var(--glass-strong); }
 .chart-name { font-size: 12.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: right; }
 .chart-name small { color: var(--faint); display: block; font-size: 10.5px; font-weight: 500; }
-.chart-bars { display: grid; gap: 3px; }
+.chart-bars { display: grid; gap: 3px; min-width: 0; }
 .bar { height: 8px; border-radius: 6px; min-width: 2px; position: relative; }
 .bar.in  { background: linear-gradient(90deg, #4f46e5, #818cf8); box-shadow: 0 0 12px rgba(99, 102, 241, .35); }
 .bar.out { background: linear-gradient(90deg, #0d9488, #5eead4); box-shadow: 0 0 12px rgba(45, 212, 191, .3); }
 .bar .lbl {
   position: absolute; left: calc(100% + 7px); top: 50%; transform: translateY(-50%);
   font-family: var(--mono); font-size: 9.5px; color: var(--faint); white-space: nowrap;
+  max-width: 110px; overflow: hidden; text-overflow: ellipsis; pointer-events: none;
 }
 .chart-val { font-family: var(--mono); font-size: 12px; font-weight: 700; text-align: right; color: var(--teal); }
 .legend { display: flex; flex-wrap: wrap; gap: 16px; color: var(--muted); font-size: 12px; margin: 12px 6px 0; }
@@ -419,12 +424,48 @@ td.sh { color: var(--faint); font-family: var(--sans); font-style: italic; font-
 /* ================= responsive ================= */
 @media (max-width: 900px) {
   .col-cached, .col-score { display: none; }
-  .chart-row { grid-template-columns: minmax(100px, 150px) 1fr 84px; }
+  .chart-row { grid-template-columns: minmax(90px, 140px) minmax(0, 1fr) 80px; }
 }
+
 @media (max-width: 640px) {
   .col-calc { display: none; }
-  .brand h1 { font-size: 16px; }
+
+  /* top bar: keep title + actions on one line without clipping */
+  .topbar { padding: 10px 12px; gap: 8px; }
+  .brand { gap: 9px; }
+  .logo { width: 36px; height: 36px; font-size: 18px; border-radius: 11px; }
+  .brand h1 { font-size: 15px; }
   .tagline { display: none; }
-  .tray { width: calc(100% - 24px); justify-content: space-between; border-radius: 18px; }
-  .stat .v { font-size: 19px; }
+  .topbar-actions { gap: 5px; }
+  .topbar-actions .btn { padding: 7px 9px; font-size: 12px; }
+  .auth-area { min-height: 0; }
+  .gbtn-wrap { transform: scale(.85); transform-origin: right center; }
+
+  /* calculator + filters breathe */
+  .calc input { width: 62px; padding: 6px 8px; font-size: 12.5px; }
+  .calc-hint { display: none; }
+  #search { min-width: 170px; flex-basis: 100%; }
+  .seg-btn { padding: 6px 9px; font-size: 12px; }
+
+  /* chart on phone: name narrower, hide per-request cost duplication */
+  .chart-row { grid-template-columns: minmax(74px, 96px) minmax(0, 1fr) 64px; gap: 8px; padding: 4px 2px; }
+  .chart-name { font-size: 11px; }
+  .chart-val { font-size: 10.5px; }
+  .bar .lbl { max-width: 74px; font-size: 8.5px; left: calc(100% + 4px); }
+
+  /* compare tray never overflows the screen */
+  .tray { width: calc(100% - 24px); flex-wrap: wrap; row-gap: 4px; justify-content: space-between; border-radius: 16px; padding: 10px 14px; }
+  #trayLabel { max-width: 60vw; overflow: hidden; text-overflow: ellipsis; }
+
+  .stat .v { font-size: 18px; }
+  .toast { left: 12px; right: 12px; bottom: 12px; max-width: none; }
+}
+
+@media (max-width: 430px) {
+  .brand h1 { font-size: 13.5px; }
+  .topbar-actions .btn { padding: 6px 7px; }
+  .logo { width: 32px; height: 32px; font-size: 16px; }
+  .user-chip span { max-width: 56px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .presets-label { display: none; }
+  .calc .calc-label { font-size: 11px; }
 }

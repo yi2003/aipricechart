@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /data/backups/
+
+Sitemap: https://aipricechart.vercel.app/sitemap.xml

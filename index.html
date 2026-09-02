@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Compare current AI / LLM API prices — input, output, cached and blended cost per 1M tokens across OpenAI, Anthropic, Google, xAI, DeepSeek and 60+ providers. August 2026 dataset." />
+  <meta name="description" content="Compare current AI / LLM API prices — input, output, cached and blended cost per 1M tokens across OpenAI, Anthropic, Google, xAI, DeepSeek, Moonshot and more, as tracked on BenchLM. Prices refresh automatically." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AI Price Chart" />
+  <meta property="og:title" content="AI Price Chart — live AI model price comparison" />
+  <meta property="og:description" content="Every current AI model, priced side by side: input/output/cached per 1M tokens, workload cost, peak/off-peak rates, 4-way compare. Data refreshed automatically from official sources." />
+  <meta property="og:url" content="https://aipricechart.vercel.app/" />
+  <meta name="twitter:card" content="summary" />
   <title>AI Price Chart — Current AI Model Price Comparison</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💸</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -42,11 +48,11 @@
     <!-- Summary stats -->
     <section id="stats" class="stats" aria-label="Dataset summary"></section>
 
-    <!-- Saved presets (sign in to sync) -->
+    <!-- Saved presets (local always; Google sign-in syncs across devices) -->
     <section id="presetsBar" class="presets-bar" aria-label="Saved presets" hidden>
       <span class="presets-label">Presets</span>
       <div id="presetChips" class="preset-chips"></div>
-      <button id="savePresetBtn" class="btn ghost mini-btn" title="Save the current filters + comparison as a preset">💾 Save view</button>
+      <button id="savePresetBtn" class="btn ghost mini-btn" title="Save the current filters + comparison — stored on this device, synced to Google when signed in">💾 Save view</button>
     </section>
 
     <!-- Controls -->
@@ -59,8 +65,8 @@
           <div class="picker-panel">
             <input id="provSearch" type="search" placeholder="Filter providers…" autocomplete="off" />
             <div class="picker-actions">
-              <button id="provAll" class="btn tiny ghost" type="button">Show all</button>
-              <button id="provNone" class="btn tiny ghost" type="button">Check all</button>
+              <button id="provAll" class="btn tiny ghost" type="button" title="Clear every provider checkbox — show all">Show all</button>
+              <button id="provNone" class="btn tiny ghost" type="button" title="Tick every provider checkbox — show all (used for the URL link)">Check all</button>
               <button id="provTop" class="btn tiny ghost" type="button">Majors only</button>
             </div>
             <div id="provList" class="prov-list" role="group" aria-label="Provider checkboxes"></div>
@@ -74,6 +80,7 @@
         </div>
 
         <label class="check"><input id="pricedOnly" type="checkbox" checked /> Hide unpriced / self-host</label>
+        <label class="check"><input id="hideDeprecated" type="checkbox" checked title="Hide models their provider has retired (e.g. DeepSeek V3.1, O1 family)" /> Hide deprecated</label>
       </div>
 
       <!-- Calculator -->
@@ -158,7 +165,7 @@
 
   <footer class="footer">
     <div id="sources" class="sources"></div>
-    <p>Built as a static, dependency-free app · data snapshot 2026-08-30 · prices change often — verify with providers.</p>
+    <p>Built as a static, dependency-free app · <span id="footerDate">prices refresh automatically</span> · always verify with providers before buying.</p>
   </footer>
 </body>
 </html>

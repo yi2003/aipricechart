@@ -18,6 +18,7 @@ const state = {
   providers: new Set(),      // empty set = all providers
   type: "all",               // all | Proprietary | Open Weight
   pricedOnly: true,
+  hideDeprecated: true,      // default: hide known-deprecated models
   sortKey: "blended",
   sortDir: 1,
   view: "table",
@@ -124,6 +125,7 @@ function filtered() {
       if (state.type === "Open Weight" && !isOpen) return false;
     }
     if (state.pricedOnly && (m.input == null || isSelfHost(m))) return false;
+    if (state.hideDeprecated && m.deprecated) return false;
     return true;
   });
 
@@ -194,8 +196,8 @@ function maxVals(rows) {
     blended: Math.max(...rows.map((m) => blended(m) ?? 0), 1e-9),
   };
 }
-function priceCell(td, v, max) {
-  td.textContent = v == null ? "—" : money(v);
+function priceCell(td, v, max, prefix = "") {
+  td.textContent = prefix + (v == null ? "—" : money(v));
   if (v != null && max > 0) {
     const frac = state.logScale
       ? Math.log10(1 + v) / Math.log10(1 + max)
@@ -279,9 +281,10 @@ function renderTable() {
 
     const tdB = el("td", "num price-cell");
     const b = blended(m);
-    if (b != null && b > 0 && b === cheapestBlended) tdB.classList.add("best");
-    fill(tdB, b, max.blended);
-    if (tdB.classList.contains("best")) tdB.textContent = "★ " + money(b);
+    const best = b != null && b > 0 && b === cheapestBlended;
+    if (best) tdB.classList.add("best");
+    if (isSelfHost(m)) { tdB.textContent = "self-host"; tdB.classList.add("sh"); }
+    else priceCell(tdB, b, max.blended, best ? "★ " : "");
     tr.append(tdB);
 
     // score
@@ -311,10 +314,16 @@ function renderChart() {
   rows = rows.slice(0, cap);
   if (!rows.length) { wrap.append(el("p", "empty", "No priced models match your filters.")); return; }
 
-  const maxB = Math.max(...rows.map(blended), 1e-9);
-  const scale = (v) => state.logScale
-    ? Math.log10(1 + v) / Math.log10(1 + maxB)
-    : v / maxB;
+  const maxIn = Math.max(...rows.map((m) => eff(m).input ?? 0), 1e-9);
+  const maxOut = Math.max(...rows.map((m) => eff(m).output ?? 0), 1e-9);
+  // per-axis scale: input/output bars are scaled against their OWN axis max,
+  // so a bar can never exceed 100% (scaling output by max blended was the overflow bug —
+  // blended ≤ output under 3:1, so high-output models produced >100% bars → page stretched)
+  const scaleFor = (axisMax) => (v) => state.logScale
+    ? Math.log10(1 + v) / Math.log10(1 + axisMax)
+    : v / axisMax;
+  const scaleIn = scaleFor(maxIn), scaleOut = scaleFor(maxOut);
+  const widthPct = (s) => Math.min(100, Math.max(0.4, s * 100));
 
   for (const m of rows) {
     const row = el("div", "chart-row");
@@ -330,14 +339,15 @@ function renderChart() {
       const holder = el("div", "bar-holder");
       holder.style.position = "relative";
       const b = el("div", "bar " + cls);
-      b.style.width = Math.max(0.4, scale(v) * 100) + "%";
+      b.style.width = widthPct(cls === "in" ? scaleIn(v) : scaleOut(v)) + "%";
       const lbl = el("span", "lbl", money(v));
       b.append(lbl);
       holder.append(b);
       return holder;
     };
-    if (m.input) bars.append(mk(m.input, "in"));
-    bars.append(mk(m.output, "out"));
+    const e = eff(m);
+    if (e.input != null && e.input > 0) bars.append(mk(e.input, "in"));
+    if (e.output != null) bars.append(mk(e.output, "out"));
     row.append(bars);
     row.append(el("div", "chart-val", money(blended(m)) + " bl"));
     wrap.append(row);
@@ -565,6 +575,66 @@ function renderCurrent() {
   $("#chartView").hidden = !isChart;
   $("#logWrap").hidden = !isChart;
   if (isChart) renderChart(); else renderTable();
+  scheduleUrlSync();
+}
+
+/* ---------------- shareable URLs ----------------
+   A view is just a URL: ?q=sonnet&provs=Anthropic,OpenAI&in=8&out=2&reqs=1000&cmp=a,b,c&tier=off-peak
+   Nothing here needs an account — sharing a comparison is a link, not a preset. */
+
+const URL_KEYS = ["q", "provs", "type", "priced", "dep", "sort", "dir", "tier", "in", "out", "reqs", "cmp", "view"];
+let _urlTimer = null;
+
+function syncUrl() {
+  clearTimeout(_urlTimer);
+  _urlTimer = setTimeout(() => {
+    const p = new URLSearchParams();
+    const q = state.search.trim();
+    if (q) p.set("q", q);
+    if (state.providers.size) p.set("provs", [...state.providers].join(","));
+    if (state.type !== "all") p.set("type", state.type);
+    if (!state.pricedOnly) p.set("priced", "0");
+    if (!state.hideDeprecated) p.set("dep", "0");
+    if (state.sortKey !== "blended") p.set("sort", state.sortKey);
+    if (state.sortDir === -1) p.set("dir", "desc");
+    if (state.timeTier !== "current") p.set("tier", state.timeTier);
+    if (state.calcIn !== 8) p.set("in", state.calcIn);
+    if (state.calcOut !== 2) p.set("out", state.calcOut);
+    if (state.calcReqs !== 1000) p.set("reqs", state.calcReqs);
+    if (state.compare.size) p.set("cmp", [...state.compare].join(","));
+    if (state.view !== "table") p.set("view", state.view);
+    const qs = p.toString();
+    const url = qs ? "?" + qs : location.pathname;
+    try { history.replaceState(null, "", url); } catch { /* sandboxed */ }
+  }, 250);
+}
+function scheduleUrlSync() { if (!_urlLock) syncUrl(); }
+let _urlLock = false; // set while applying a shared URL so we don't echo it back
+
+function urlToState() {
+  try {
+    const p = new URLSearchParams(location.search);
+    if (p.has("q")) state.search = p.get("q");
+    if (p.has("provs")) {
+      const known = allProviders();
+      state.providers = new Set(p.get("provs").split(",").map((s) => s.trim()).filter((x) => known.includes(x)));
+    }
+    if (p.has("type") && ["all", "Proprietary", "Open Weight"].includes(p.get("type"))) state.type = p.get("type");
+    if (p.has("priced")) state.pricedOnly = p.get("priced") !== "0";
+    if (p.has("dep")) state.hideDeprecated = p.get("dep") !== "0";
+    if (p.has("sort") && ["blended", "input", "output", "ctx", "score", "monthly"].includes(p.get("sort"))) state.sortKey = p.get("sort");
+    if (p.get("dir") === "desc") state.sortDir = -1;
+    if (p.has("tier") && ["current", "peak", "off-peak"].includes(p.get("tier"))) state.timeTier = p.get("tier");
+    if (p.has("in")) state.calcIn = Math.max(0, parseFloat(p.get("in")) || state.calcIn);
+    if (p.has("out")) state.calcOut = Math.max(0, parseFloat(p.get("out")) || state.calcOut);
+    if (p.has("reqs")) state.calcReqs = Math.max(0, parseFloat(p.get("reqs")) || state.calcReqs);
+    if (p.has("cmp")) {
+      const ids = new Set(MODELS.map((m) => m.id));
+      state.compare = new Set(p.get("cmp").split(",").filter((id) => ids.has(id)).slice(0, 4));
+    }
+    if (p.has("view") && ["table", "chart"].includes(p.get("view"))) state.view = p.get("view");
+    return p.toString().length > 0;
+  } catch { return false; }
 }
 
 /* ---------------- init ---------------- */
@@ -581,7 +651,8 @@ function captureView() {
     provs: [...state.providers],
     type: state.type,
     priced: $("#pricedOnly").checked,
-    sort: state.sort, dir: state.dir,
+    hideDep: $("#hideDeprecated")?.checked ?? false,
+    sort: state.sortKey, dir: state.sortDir === 1 ? "asc" : "desc",
     tier: state.timeTier,
     calcIn: state.calcIn, calcOut: state.calcOut, calcReqs: state.calcReqs,
     cmp: [...state.compare],
@@ -597,8 +668,9 @@ function applyView(v) {
   state.type = ["all", "Proprietary", "Open Weight"].includes(v.type) ? v.type : "all";
   document.querySelectorAll("#typeSeg .seg-btn").forEach((b) => b.classList.toggle("active", b.dataset.type === state.type));
   $("#pricedOnly").checked = v.priced !== false;
-  if (["blended", "input", "output", "ctx", "score"].includes(v.sort)) state.sort = v.sort;
-  state.dir = v.dir === "desc" ? "desc" : "asc";
+  if ($("#hideDeprecated")) $("#hideDeprecated").checked = v.hideDep !== false;
+  if (["blended", "input", "output", "ctx", "score"].includes(v.sort)) state.sortKey = v.sort;
+  state.sortDir = v.dir === "desc" ? -1 : 1;
   if (["current", "peak", "off-peak"].includes(v.tier)) {
     state.timeTier = v.tier;
     document.querySelectorAll("#tierSeg .seg-btn").forEach((b) => b.classList.toggle("active", b.dataset.tier === v.tier));
@@ -755,20 +827,6 @@ function localPresetsSave() {
 }
 
 async function savePreset() {
-  if (!window.GOOGLE_CLIENT_ID) return toast("Sign-in is not configured on this deployment");
-  if (!state.user) {
-    // prompt sign-in: use One Tap if available, otherwise make the button pulse
-    try {
-      window.google?.accounts?.id?.prompt((n) => {
-        if (n.isNotDisplayed() || n.isSkippedMoment()) {
-          toast("Use the “Sign in with Google” button (top right) first");
-          $("#gBtnWrap").classList.add("pulse");
-          setTimeout(() => $("#gBtnWrap")?.classList.remove("pulse"), 4000);
-        }
-      });
-    } catch { /* not loaded */ }
-    return;
-  }
   const existing = state.presets.map((p) => p.name);
   const def = `My compare ${state.presets.length + 1}`;
   const name = prompt("Preset name (saves search, filters, sort, calculator and comparison):", existing[existing.length - 1] || def);
@@ -777,14 +835,17 @@ async function savePreset() {
   const prev = state.presets;
   state.presets = [...state.presets.filter((p) => p.name !== preset.name), preset].slice(0, 50);
   renderPresetChips();
+  cachePresets(); // always saved locally first — Google is just the sync layer
+  if (!state.user) {
+    toast(`Preset "${preset.name}" saved on this device — sign in to sync it across devices`);
+    return;
+  }
   try {
     await apiPresets("PUT", { presets: state.presets });
-    cachePresets();
-    toast(`Preset "${preset.name}" saved — click its chip to restore`);
+    toast(`Preset "${preset.name}" saved & synced — click its chip to restore`);
   } catch (e) {
-    if (/not configured|Failed to fetch|NetworkError/i.test(e.message)) return localPresetsSave();
-    state.presets = prev; renderPresetChips();
-    toast(`Save failed: ${e.message}`);
+    state.presets = prev; renderPresetChips(); cachePresets();
+    toast(`Cloud sync failed (${e.message}) — kept locally`);
   }
 }
 
@@ -828,8 +889,12 @@ function init() {
   // theme
   applyTheme(localStorage.getItem(LS.theme) || "dark");
 
-  // dataset meta
+  // dataset meta — single freshness source (badge, footer, meta all from DATA.asOf)
   $("#asOfBadge").textContent = `data: ${DATA.asOf}`;
+  const fd = document.getElementById("footerDate");
+  if (fd) fd.textContent = `data snapshot ${DATA.asOf} · refreshed ${DATA.period ? "from " + DATA.period : ""}· prices change often`;
+  const md = document.querySelector('meta[name="description"]');
+  if (md) md.content = `Compare current AI/LLM API prices — input, output, cached and blended per 1M tokens across 60+ providers. ${DATA.models.length} models tracked, snapshot ${DATA.asOf}.`;
 
   // sources
   const src = $("#sources");
@@ -839,22 +904,33 @@ function init() {
     src.append(a);
   }
 
-  // restore calc + priced pref + providers
+  // restore calc + priced pref + providers (URL params below override these)
   try {
     const c = JSON.parse(localStorage.getItem(LS.calc) || "null");
     if (c) { state.calcIn = c.in; state.calcOut = c.out; state.calcReqs = c.reqs; }
-    $("#calcIn").value = state.calcIn;
-    $("#calcOut").value = state.calcOut;
-    $("#calcReqs").value = state.calcReqs;
     state.pricedOnly = localStorage.getItem(LS.priced) !== "0";
-    $("#pricedOnly").checked = state.pricedOnly;
     const ps = JSON.parse(localStorage.getItem(LS.provs) || "[]");
     state.providers = new Set(ps.filter((p) => MODELS.some((m) => m.provider === p)));
   } catch { /* first run */ }
+  const hasUrl = urlToState(); // shared link wins over saved prefs
+  $("#calcIn").value = state.calcIn;
+  $("#calcOut").value = state.calcOut;
+  $("#calcReqs").value = state.calcReqs;
+  $("#pricedOnly").checked = state.pricedOnly;
+  if ($("#hideDeprecated")) $("#hideDeprecated").checked = state.hideDeprecated;
   updateProvCount();
 
   // search
   $("#search").addEventListener("input", (e) => { state.search = e.target.value; renderCurrent(); });
+  if (state.search) $("#search").value = state.search; // from shared URL
+
+  // hide-deprecated
+  if ($("#hideDeprecated")) {
+    $("#hideDeprecated").addEventListener("change", (e) => {
+      state.hideDeprecated = e.target.checked;
+      renderCurrent();
+    });
+  }
 
   // provider picker
   $("#provSearch").addEventListener("input", renderProvList);
@@ -946,9 +1022,12 @@ function init() {
       renderTable();
     });
   });
-  // default sort arrow
+  // default sort arrow (respects URL/preset-driven direction)
   const defaultTh = document.querySelector(`#priceTable th[data-key="${state.sortKey}"]`);
-  if (defaultTh) defaultTh.append(el("span", "arr", "▲"));
+  if (defaultTh) {
+    defaultTh.append(el("span", "arr", state.sortDir === 1 ? "▲" : "▼"));
+    defaultTh.setAttribute("aria-sort", state.sortDir === 1 ? "ascending" : "descending");
+  }
 
   // tray + modal
   $("#compareBtn").addEventListener("click", compareModal);
@@ -958,11 +1037,21 @@ function init() {
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
 
   // csv + theme
-  $("#csvBtn").addEventListener("click", exportCSV);
+  $("#csvBtn").addEventListener("click", () => { exportCSV(); toast("CSV downloaded ✓"); });
   $("#themeBtn").addEventListener("click", () => {
     applyTheme(document.documentElement.dataset.theme === "light" ? "dark" : "light");
   });
 
+  // reflect URL-driven state in the UI (segments/tabs) before first paint
+  document.querySelectorAll("#typeSeg .seg-btn").forEach((b) => b.classList.toggle("active", b.dataset.type === state.type));
+  document.querySelectorAll("#tierSeg .seg-btn").forEach((b) => b.classList.toggle("active", b.dataset.tier === state.timeTier));
+  document.querySelectorAll(".tab").forEach((t) => {
+    const on = t.dataset.view === state.view;
+    t.classList.toggle("active", on); t.setAttribute("aria-selected", String(on));
+  });
+  if (state.compare.size) renderTray();
+
+  _urlLock = false;
   renderCurrent();
 }
 
