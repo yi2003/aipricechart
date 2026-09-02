@@ -23,6 +23,7 @@ const DATA_DIR = path.join(ROOT, "data");
 const MODELS_PATH = path.join(DATA_DIR, "models.js");
 const OVERRIDES_PATH = path.join(DATA_DIR, "overrides.json");
 const LASTREFRESH_PATH = path.join(DATA_DIR, "last-refresh.json");
+const CHANGELOG_PATH = path.join(DATA_DIR, "changelog.json");
 const BACKUP_DIR = path.join(DATA_DIR, "backups");
 
 const BENCHLM_URL = "https://benchlm.ai/llm-pricing";
@@ -338,6 +339,40 @@ function applyOverrides(models, ov) {
   return applied;
 }
 
+/* ---------------- price-change changelog ----------------
+   Each refresh that actually moved prices appends a dated entry to
+   data/changelog.json. The file ships to Vercel with the sync commit,
+   so visitors can see what changed without any account. */
+
+function updateChangelog(changes, models) {
+  if (!changes || !changes.length) return false;
+  const byId = new Map(models.map((m) => [m.id, m]));
+  let log = [];
+  try { log = JSON.parse(fs.readFileSync(CHANGELOG_PATH, "utf8")); if (!Array.isArray(log)) log = []; } catch { log = []; }
+  const entry = {
+    date: todayISO(),
+    changes: changes.map((c) => {
+      const m = byId.get(c.id) || {};
+      return {
+        id: c.id,
+        name: m.name || c.id,
+        provider: m.provider || "",
+        ...(c.change === "added" || c.field == null
+          ? { added: true }
+          : { field: c.field, from: c.from, to: c.to }),
+      };
+    }),
+  };
+  const idx = log.findIndex((e) => e.date === entry.date);
+  if (idx >= 0) log[idx] = entry; else log.unshift(entry);
+  const cutoff = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
+  log = log.filter((e) => e.date >= cutoff).slice(0, 40);
+  const tmp = CHANGELOG_PATH + ".tmp";
+  fs.writeFileSync(tmp, JSON.stringify(log, null, 1));
+  fs.renameSync(tmp, CHANGELOG_PATH);
+  return true;
+}
+
 function diffModels(oldList, newList) {
   if (!oldList) return [];
   const oldById = new Map(oldList.map((m) => [m.id, m]));
@@ -584,6 +619,11 @@ async function runRefresh(reason = "manual", opts = {}) {
     fs.writeFileSync(tmp, generateModelsJs(models, bench.meta, sources));
     fs.renameSync(tmp, MODELS_PATH);
 
+    // price-change history for visitors (data/changelog.json ships with the sync commit)
+    let changelogUpdated = false;
+    try { changelogUpdated = updateChangelog(changes, models); } catch (e) { log.push(`changelog failed: ${e.message}`); }
+    if (changelogUpdated) log.push(`changelog: logged ${changes.length} change${changes.length === 1 ? "" : "s"} for ${todayISO()}`);
+
     const summary = {
       ok: true,
       reason,
@@ -631,4 +671,4 @@ function safeReadModels() {
   }
 }
 
-module.exports = { runRefresh, lastRefresh: lastRefreshSummary, validateModels };
+module.exports = { runRefresh, lastRefresh: lastRefreshSummary, validateModels, updateChangelog };

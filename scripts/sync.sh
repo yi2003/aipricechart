@@ -24,7 +24,7 @@ r.validation.suspicious.forEach(s =>
   console.warn('  ⚠ ' + s.model + ' ' + s.field + ': ' + s.from + ' → ' + s.to + (s.pct ? ' (' + s.pct + '%)' : '')));
 "
 
-git add data/models.js
+git add data/models.js data/changelog.json
 if git diff --cached --quiet; then
   echo "no price changes — nothing to push"
 else

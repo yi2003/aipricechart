@@ -267,6 +267,13 @@ function renderTable() {
     if (m.type === "Pending") sub.append(el("span", "tag pro", "pending"));
     if (m.pricedVia) sub.append(el("span", "tag reseller", `via ${m.pricedVia}`));
     if (m.free) sub.append(el("span", "tag open", "free api"));
+    const chg = chgMap.get(m.id);
+    if (chg) {
+      const titles = chg.changes.map(changelogText).join(" · ");
+      const t = el("span", chg.changes[0].added ? "tag added" : "tag chg", chg.changes[0].added ? "new" : "▲ changed");
+      t.title = `Price activity ${chg.date}: ${titles}`;
+      sub.append(t);
+    }
     if (m.timeTiers && e.tier) sub.append(el("span", e.tier === "peak" ? "tag peak" : "tag offpeak", e.tier === "peak" ? "peak now" : "off-peak −50%"));
     if (sub.childNodes.length) tdN.append(sub);
     tr.append(tdN);
@@ -952,6 +959,72 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
+/* ---------------- price-change activity (data/changelog.json) ----------------
+   The refresh writes a dated changelog of real price moves / new listings and it
+   ships to Vercel with each sync. Visitors see a 📈 button with the recent count,
+   a modal with old → new per model, and a small ▲ tag on rows that changed. */
+
+const CHG_WINDOW_DAYS = 7;
+let changelogEntries = [];   // [{date, changes:[{id,name,provider,field?,from?,to?,added?}]}]
+let chgMap = new Map();      // id → {date, text} for the most recent change in window
+
+function daysAgoISO(n) {
+  const d = new Date(Date.now() - n * 864e5);
+  return d.toISOString().slice(0, 10);
+}
+
+function changelogText(c) {
+  if (c.added) return "added to catalog";
+  return `${c.field === "input" ? "input" : c.field === "output" ? "output" : "cached input"} $${c.from ?? "—"} → $${c.to ?? "—"}`;
+}
+
+function loadChangelog() {
+  const btn = $("#changelogBtn"), cnt = $("#changelogCount");
+  fetch("data/changelog.json", { cache: "no-store" })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((log) => {
+      if (!Array.isArray(log)) { btn.hidden = true; return; }
+      const cutoff = daysAgoISO(CHG_WINDOW_DAYS);
+      changelogEntries = log.filter((e) => e.date >= cutoff).sort((a, b) => b.date.localeCompare(a.date));
+      // latest change per model (dedupe across days)
+      chgMap = new Map();
+      for (const e of changelogEntries) for (const c of e.changes) {
+        if (!chgMap.has(c.id)) chgMap.set(c.id, { date: e.date, changes: e.changes.filter((x) => x.id === c.id) });
+      }
+      const total = changelogEntries.reduce((n, e) => n + e.changes.length, 0);
+      if (!total) { btn.hidden = true; return; }
+      cnt.textContent = `${total} change${total === 1 ? "" : "s"}`;
+      btn.hidden = false;
+      renderTable();
+    })
+    .catch(() => { btn.hidden = true; });
+}
+
+function showChangelog() {
+  if (!changelogEntries.length) return;
+  const body = $("#modalBody");
+  body.innerHTML = "";
+  body.append(el("h2", "", `📈 Price activity — last ${CHG_WINDOW_DAYS} days`));
+  for (const e of changelogEntries) {
+    const h = el("h3", "chg-day", e.date);
+    body.append(h);
+    for (const c of e.changes) {
+      const m = MODELS.find((x) => x.id === c.id);
+      const row = el("button", "chg-row", "");
+      row.innerHTML =
+        `<span class="chg-name">${escapeHtml(c.name)}</span>` +
+        `<span class="chg-prov">${escapeHtml(c.provider)}</span>` +
+        `<span class="chg-delta ${c.added ? "add" : ""}">${escapeHtml(changelogText(c))}</span>`;
+      if (m) { row.addEventListener("click", () => showDetail(m.id)); row.classList.add("clickable"); }
+      body.append(row);
+    }
+  }
+  const tip = el("p", "sub");
+  tip.textContent = "Click a model for details · prices are USD per 1M tokens";
+  body.append(tip);
+  openModal();
+}
+
 function init() {
   // auth + presets UI
   $("#savePresetBtn").addEventListener("click", savePreset);
@@ -974,6 +1047,10 @@ function init() {
     a.href = s.url; a.target = "_blank"; a.rel = "noopener";
     src.append(a);
   }
+
+  // price-change activity (data/changelog.json, shipped with each sync)
+  $("#changelogBtn").addEventListener("click", showChangelog);
+  loadChangelog();
 
   // restore calc + priced pref + providers (URL params below override these)
   try {
