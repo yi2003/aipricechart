@@ -1,0 +1,13 @@
+[
+ {
+  "date": "2026-09-03",
+  "changes": [
+   {
+    "id": "gpt-6-astra",
+    "name": "GPT-6 Astra",
+    "provider": "OpenAI",
+    "added": true
+   }
+  ]
+ }
+]
