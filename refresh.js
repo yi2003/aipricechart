@@ -293,7 +293,7 @@ function applyOverrides(models, ov) {
   for (const [slug, patch] of Object.entries(ov.bySlug || {})) {
     const m = byId.get(slug);
     if (!m) continue;
-    for (const k of ["input", "cached", "output", "type", "ctx", "ctxTok", "timeTiers"]) {
+    for (const k of ["input", "cached", "output", "type", "ctx", "ctxTok", "timeTiers", "officialUrl"]) {
       if (patch[k] !== undefined) m[k] = patch[k];
     }
     if (patch.free !== undefined) m.free = patch.free;

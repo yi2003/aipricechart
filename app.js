@@ -473,7 +473,7 @@ function showDetail(id) {
   links.append(a);
   const off = officialUrl(m);
   if (off) {
-    const oa = el("a", "", "Official pricing page ↗");
+    const oa = el("a", "", "Official ↗");
     oa.href = off; oa.target = "_blank"; oa.rel = "noopener";
     links.append(document.createTextNode(" · "));
     links.append(oa);
