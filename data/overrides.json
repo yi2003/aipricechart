@@ -175,6 +175,24 @@
       "free": false,
       "note": "Released Aug 26, 2026 — ¥1/¥3 per 1M tokens on Model Studio (≈$0.15–0.16 in / $0.47 out by FX); OpenRouter routes at $0.15/$0.47, cache read $0.016",
       "source": "OpenRouter + Alibaba announcement"
+    },
+    {
+      "id": "gpt-6-astra",
+      "provider": "OpenAI",
+      "name": "GPT-6 Astra",
+      "variant": "astra",
+      "input": 10,
+      "cached": null,
+      "output": 50,
+      "ctx": "1.05M",
+      "ctxTok": 1050000,
+      "type": "Proprietary",
+      "score": null,
+      "url": "https://platform.openai.com/docs/models/gpt-6-astra",
+      "officialUrl": "https://platform.openai.com/docs/models/gpt-6-astra",
+      "free": false,
+      "note": "OpenAI flagship (GPT-6 family) — most capable model. Not yet listed on BenchLM; price verified from OpenAI official docs ($10 in / $50 out per 1M tokens, 1.05M context).",
+      "source": "OpenAI docs"
     }
   ],
   "deprecated": [
