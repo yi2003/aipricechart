@@ -462,6 +462,121 @@ function validateModels(models, prevModels) {
   return { errors, warnings, suspicious };
 }
 
+/* ---------------- new-model detection (official docs) ----------------
+   BenchLM lags behind provider releases (GPT-6 Astra was missing entirely).
+   This watches each provider's official model index and, for any model the
+   catalog doesn't know yet, tries to read its price from the official page.
+   Genuinely-new models with a price are auto-added to overrides.json
+   (tagged "auto-detected") so they appear on this refresh; ones we can't
+   price are only reported — we never invent rates. */
+
+const DETECT_SKIP = /embed|audio|tts|whisper|moderation|dall|image|babbage|ada|davinci|vision|search|rerank|transcribe/i;
+const OPENAI_DOCS = {
+  indexUrl: "https://platform.openai.com/docs/models",
+  pageUrl: (slug) => `https://platform.openai.com/docs/models/${slug}`,
+  keep: /gpt|^o[1-9]|codex|realtime|omni/i,
+};
+
+const normKey = (s) => String(s).toLowerCase().replace(/[^a-z0-9]/g, "");
+const parseNum = (s) => s == null ? null : parseFloat(String(s).replace(/,/g, ""));
+
+/** per-model extraction — prefers the docs .md variant (clean tables), falls back to HTML */
+async function extractModelFromDocs(label, slug, pageUrl) {
+  let md = null;
+  try {
+    const r = await fetch(pageUrl + ".md", { headers: { "user-agent": "Mozilla/5.0" } });
+    if (r.ok) md = await r.text();
+  } catch { /* fall through */ }
+  const rec = {
+    id: slug.replace(/\./g, "-"),
+    name: slug,
+    provider: label,
+    input: null, cached: null, output: null,
+    ctx: null, ctxTok: null, type: "Proprietary", score: null, free: false,
+    url: pageUrl, officialUrl: pageUrl, variant: null,
+  };
+  if (md && !/not found|error/i.test(md.slice(0, 400))) {
+    const h1 = md.match(/^#\s+(.+?)\s*$/m);
+    if (h1) rec.name = h1[1].trim();
+    rec.input = parseNum(md.match(/^\|\s*Input\s*\|\s*\$([\d.]+)/im)?.[1]);
+    rec.cached = parseNum(md.match(/^\|\s*Cached input\s*\|\s*\$([\d.]+)/im)?.[1]);
+    rec.output = parseNum(md.match(/^\|\s*Output\s*\|\s*\$([\d.]+)/im)?.[1]);
+    rec.ctxTok = parseNum(md.match(/([\d,]+)\s*context window/i)?.[1]);
+    if (rec.ctxTok) rec.ctx = rec.ctxTok >= 1e6 ? `${(rec.ctxTok / 1e6).toFixed(rec.ctxTok % 1e6 ? 2 : 0).replace(/\.0+$/, "")}M` : `${Math.round(rec.ctxTok / 1000)}K`;
+    const tierNote = md.match(/- Prompts with more than\s*([^.]+)\./i)?.[1];
+    if (tierNote) rec.note = `Prompts over ${tierNote} (long-context tier).`;
+  } else {
+    // HTML fallback: price line only
+    try {
+      const r = await fetch(pageUrl, { headers: { "user-agent": "Mozilla/5.0" } });
+      if (r.ok) {
+        const text = (await r.text()).replace(/<script[\s\S]*?<\/script>/g, " ").replace(/<style[\s\S]*?<\/style>/g, " ").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+        const pm = text.match(/Price\s+\$([\d.]+)\s*[•·]\s*\$([\d.]+)/);
+        if (pm) { rec.input = parseFloat(pm[1]); rec.output = parseFloat(pm[2]); }
+      }
+    } catch { /* unpriced */ }
+  }
+  return rec;
+}
+
+async function detectNewModels(models) {
+  const known = new Set();
+  for (const m of models) { known.add(normKey(m.id)); known.add(normKey(m.name)); }
+  const out = { checked: 0, found: [], priced: [], unpriced: [] };
+  const logLines = [];
+
+  const scanProvider = async (label, cfg) => {
+    const res = await fetch(cfg.indexUrl, { headers: { "user-agent": "Mozilla/5.0" } });
+    if (!res.ok) throw new Error(`${label} index HTTP ${res.status}`);
+    const html = await res.text();
+    const slugs = [...new Set([...html.matchAll(/docs\/models\/([a-z0-9][a-z0-9._-]+)/gi)].map((m) => m[1].toLowerCase()))]
+      .filter((s) => !DETECT_SKIP.test(s) && cfg.keep.test(s));
+
+    let pageFetches = 0;
+    for (const slug of slugs) {
+      if (pageFetches >= 8) break; // safety cap per run
+      if (known.has(normKey(slug))) continue;
+      out.checked++;
+      const rec = await extractModelFromDocs(label, slug, cfg.pageUrl(slug));
+      pageFetches++;
+      out.found.push(rec);
+      (rec.input != null && rec.output != null ? out.priced : out.unpriced).push(rec);
+    }
+  };
+
+  for (const [label, cfg] of [["OpenAI", OPENAI_DOCS]]) {
+    try {
+      await scanProvider(label, cfg);
+      logLines.push(`detect[${label}]: ${out.found.length} model(s) missing from catalog (${out.priced.length} priced)`);
+    } catch (e) {
+      logLines.push(`detect[${label}] FAILED: ${e.message}`);
+    }
+  }
+  return { ...out, log: logLines };
+}
+
+/** append auto-detected models to overrides.json addModels (persisted, dedup-safe) */
+function persistDetected(recs) {
+  if (!recs.length) return 0;
+  const ov = loadStaticOverrides();
+  const existingIds = new Set((ov.addModels || []).map((m) => m.id));
+  const knownSlugs = new Set(Object.keys(ov.bySlug || {}));
+  let added = 0;
+  const stamp = todayISO();
+  for (const rec of recs) {
+    if (existingIds.has(rec.id) || knownSlugs.has(rec.id)) continue;
+    ov.addModels = ov.addModels || [];
+    ov.addModels.push({ ...rec, note: `Auto-detected from ${rec.provider} official docs on ${stamp} — price read from the official model page. ${rec.note || ""}`.trim(), source: `${rec.provider} docs (auto)` });
+    added++;
+  }
+  if (added) {
+    const tmp = OVERRIDES_PATH + ".tmp";
+    fs.writeFileSync(tmp, JSON.stringify(ov, null, 2));
+    fs.renameSync(tmp, OVERRIDES_PATH);
+  }
+  return added;
+}
+
 /* ---------------- file generation ---------------- */
 
 function generateModelsJs(models, meta, sourceList) {
@@ -525,7 +640,7 @@ async function runRefresh(reason = "manual", opts = {}) {
     }
 
     // 3) merge: static fallback first, live parser results win per model
-    const stat = loadStaticOverrides();
+    let stat = loadStaticOverrides();
     const bySlug = { ...(stat.bySlug || {}) };
     for (const [slug, patch] of Object.entries(dynamicOverrides)) {
       bySlug[slug] = { ...(bySlug[slug] || {}), ...patch };
@@ -542,6 +657,22 @@ async function runRefresh(reason = "manual", opts = {}) {
     } catch (e) {
       parsers.openrouter = { ok: false, error: String(e.message || e) };
       log.push(`openrouter FAILED: ${e.message} — no host-price enrichment`);
+    }
+
+    // 3c) new-model detection vs official docs (BenchLM lags releases — GPT-6 case)
+    let detection = { checked: 0, found: [], priced: [], unpriced: [], log: [] };
+    try {
+      detection = await detectNewModels(models);
+      log.push(...detection.log);
+      if (!dryRun && detection.priced.length) {
+        const persisted = persistDetected(detection.priced);
+        if (persisted) {
+          log.push(`auto-added ${persisted} new model(s) to overrides.json`);
+          stat = loadStaticOverrides(); // reload so THIS run uses the persisted (noted) entries
+        }
+      }
+    } catch (e) {
+      log.push(`detect FAILED: ${e.message} — continuing without new-model detection`);
     }
 
     // 4) apply + write atomically (with backup)
@@ -601,6 +732,11 @@ async function runRefresh(reason = "manual", opts = {}) {
         models: models.length,
         priced: models.filter((m) => m.input != null && !(m.input === 0 && m.output === 0 && !m.free)).length,
         free: models.filter((m) => m.free).length,
+        detection: {
+          checked: detection.checked,
+          found: detection.found.map((r) => ({ id: r.id, name: r.name, input: r.input, output: r.output })),
+          unpriced: detection.unpriced.map((r) => r.id),
+        },
         overridesApplied: applied,
         parsers,
         validation,
@@ -636,6 +772,11 @@ async function runRefresh(reason = "manual", opts = {}) {
       free: models.filter((m) => m.free).length,
       overridesApplied: applied,
       parsers,
+      detection: {
+        checked: detection.checked,
+        found: detection.found.map((r) => ({ id: r.id, name: r.name, input: r.input, output: r.output })),
+        unpriced: detection.unpriced.map((r) => r.id),
+      },
       validation,
       changes,
       log,
@@ -671,4 +812,4 @@ function safeReadModels() {
   }
 }
 
-module.exports = { runRefresh, lastRefresh: lastRefreshSummary, validateModels, updateChangelog };
+module.exports = { runRefresh, lastRefresh: lastRefreshSummary, validateModels, updateChangelog, detectNewModels };

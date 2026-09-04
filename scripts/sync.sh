@@ -24,7 +24,8 @@ r.validation.suspicious.forEach(s =>
   console.warn('  ⚠ ' + s.model + ' ' + s.field + ': ' + s.from + ' → ' + s.to + (s.pct ? ' (' + s.pct + '%)' : '')));
 "
 
-git add data/models.js
+# refresh can auto-add models to overrides.json (new-model detection) — always ship it
+git add data/models.js data/overrides.json
 [ -f data/changelog.json ] && git add data/changelog.json
 if git diff --cached --quiet; then
   echo "no price changes — nothing to push"
