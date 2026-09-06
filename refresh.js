@@ -257,6 +257,7 @@ async function scrapeOpenRouter() {
 
 function applyOpenRouterHosts(models, hosts) {
   let filled = 0, linked = 0;
+  const filledRecs = [];
   const byId = new Map(models.map((m) => [m.id, m]));
   for (const [benchId, h] of Object.entries(hosts || {})) {
     const m = byId.get(benchId);
@@ -269,9 +270,38 @@ function applyOpenRouterHosts(models, hosts) {
       m.pricedVia = "OpenRouter"; // honest marker: these are RESELLER rates, not first-party
       m.note = `Reseller rate via OpenRouter: $${h.input} in / $${h.output} out per 1M tokens (no first-party API price in the dataset — OpenRouter hosts the open weights). ${m.note || ""}`.trim();
       filled++;
+      filledRecs.push({ m, h });
     } else linked++;
   }
-  return { filled, linked };
+  return { filled, linked, filledRecs };
+}
+
+/** Persist reseller fills so a later OR outage/catalog change can't silently unpriced them. */
+function persistOpenRouterFills(filledRecs) {
+  if (!filledRecs.length) return 0;
+  const ov = loadStaticOverrides();
+  const have = new Set([...(ov.addModels || []).map((x) => x.id), ...Object.keys(ov.bySlug || {})]);
+  let added = 0;
+  const stamp = todayISO();
+  for (const { m, h } of filledRecs) {
+    if (have.has(m.id)) continue;
+    ov.addModels = ov.addModels || [];
+    ov.addModels.push({
+      id: m.id, provider: m.provider, name: m.name, variant: m.variant,
+      input: m.input, cached: null, output: m.output,
+      ctx: m.ctx, ctxTok: m.ctxTok, type: m.type, score: m.score, free: false,
+      url: h.url, officialUrl: h.url,
+      note: `Reseller rate via OpenRouter on ${stamp}: $${m.input} in / $${m.output} out per 1M tokens (no first-party API price in the dataset).`,
+      source: "OpenRouter (persisted)",
+    });
+    added++;
+  }
+  if (added) {
+    const tmp = OVERRIDES_PATH + ".tmp";
+    fs.writeFileSync(tmp, JSON.stringify(ov, null, 2));
+    fs.renameSync(tmp, OVERRIDES_PATH);
+  }
+  return added;
 }
 
 /* ---------------- static fallback overrides ---------------- */
@@ -685,6 +715,10 @@ async function runRefresh(reason = "manual", opts = {}) {
     });
     const orResult = applyOpenRouterHosts(models, orHosts);
     log.push(`openrouter hosts: ${orResult.filled} prices filled · ${orResult.linked} rows linked`);
+    if (!dryRun && orResult.filledRecs.length) {
+      const persistedOr = persistOpenRouterFills(orResult.filledRecs);
+      if (persistedOr) log.push(`persisted ${persistedOr} OpenRouter reseller rate(s) to overrides.json`);
+    }
 
     models = models.filter((m) => m.input != null || m.output != null || m.type === "Open Weight");
     models.sort((a, b) =>
