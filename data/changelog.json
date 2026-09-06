@@ -3,36 +3,20 @@
   "date": "2026-09-06",
   "changes": [
    {
-    "id": "qwen3-235b-2507",
-    "name": "Qwen3 235B 2507",
-    "provider": "Alibaba",
-    "field": "input",
-    "from": 0.0875,
-    "to": 0.09
-   },
-   {
-    "id": "qwen3-235b-2507",
-    "name": "Qwen3 235B 2507",
-    "provider": "Alibaba",
-    "field": "output",
-    "from": 0.35,
-    "to": 0.55
-   },
-   {
     "id": "qwen3-8-max",
     "name": "Qwen3.8 Max",
     "provider": "Alibaba",
     "field": "input",
-    "from": 2,
-    "to": null
+    "from": null,
+    "to": 2
    },
    {
     "id": "qwen3-8-max",
     "name": "Qwen3.8 Max",
     "provider": "Alibaba",
     "field": "output",
-    "from": 6,
-    "to": null
+    "from": null,
+    "to": 6
    }
   ]
  },
