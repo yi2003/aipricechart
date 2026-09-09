@@ -1,5 +1,16 @@
 [
  {
+  "date": "2026-09-09",
+  "changes": [
+   {
+    "id": "mercury-2-5",
+    "name": "Mercury 2.5",
+    "provider": "Inception",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-09-06",
   "changes": [
    {
