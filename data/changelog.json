@@ -3,10 +3,28 @@
   "date": "2026-09-09",
   "changes": [
    {
-    "id": "mercury-2-5",
-    "name": "Mercury 2.5",
-    "provider": "Inception",
-    "added": true
+    "id": "glm-5-3-flash",
+    "name": "GLM-5.3-Flash",
+    "provider": "Z.AI",
+    "field": "input",
+    "from": 0.075,
+    "to": 0.15
+   },
+   {
+    "id": "glm-5-3-flash",
+    "name": "GLM-5.3-Flash",
+    "provider": "Z.AI",
+    "field": "cached",
+    "from": 0.015,
+    "to": 0.03
+   },
+   {
+    "id": "glm-5-3-flash",
+    "name": "GLM-5.3-Flash",
+    "provider": "Z.AI",
+    "field": "output",
+    "from": 0.25,
+    "to": 0.5
    }
   ]
  },
