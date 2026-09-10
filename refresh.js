@@ -177,44 +177,92 @@ async function scrapeZAI() {
 
 async function scrapeDeepSeek() {
   const text = htmlToText(await fetchText(DEEPSEEK_PRICING_URL));
-  // grab BOTH tiers: "… 1M OUTPUT TOKENS | OFF-PEAK | $0.66 | $1.98 | $0.66 | PEAK | $1.32 | $3.96 | $1.32 …"
-  // anchors are pipe-prefixed so "PEAK" inside "OFF-PEAK" can't confuse the match
-  const grab = (label) => {
-    const re = new RegExp(
-      label +
-      "[\\s\\S]*?\\| OFF-PEAK \\| \\$([0-9.]+) \\| \\$([0-9.]+) \\| \\$([0-9.]+)" +
-      " \\| PEAK \\| \\$([0-9.]+) \\| \\$([0-9.]+) \\| \\$([0-9.]+)"
-    );
+
+  // The docs table's priced columns change over time (was flash/pro/vision, now
+  // flash-v4.1/pro). Read the column model names from the page rather than assuming order.
+  let apiCols = ["deepseek-flash", "deepseek-v4-pro"];
+  const modelRow = text.match(/MODEL\s*\|?\s*([\s\S]{0,220}?)(?:BASE URL|MODEL VERSION)/i);
+  if (modelRow) {
+    const found = [...modelRow[1].matchAll(/deepseek-[\w.\-]+/gi)].map((m) => m[0].toLowerCase());
+    if (found.length >= 2) apiCols = found;
+  }
+
+  // One pricing row = OFF-PEAK values… then PEAK values…; N columns → 2N numbers.
+  const row = (anchor, label) => {
+    const re = new RegExp(anchor + "([\\s\\S]*?)(?=1M INPUT TOKENS|1M OUTPUT TOKENS|Concurrency Limit|$)", "i");
     const m = text.match(re);
-    if (!m) throw new Error(`DeepSeek: cannot locate "${label}" tier rows`);
-    const n = m.slice(1).map(parseFloat);
-    // column order on the docs page: v4-flash, v4-pro, v4-flash-vision-exp
-    return { off: { flash: n[0], pro: n[1], vision: n[2] }, peak: { flash: n[3], pro: n[4], vision: n[5] } };
+    if (!m) throw new Error(`DeepSeek: cannot locate "${label}" row`);
+    const nums = [...m[1].matchAll(/\$([0-9.]+)/g)].map((x) => parseFloat(x[1]));
+    if (nums.length < 2 || nums.length % 2 !== 0) {
+      throw new Error(`DeepSeek: unexpected value count (${nums.length}) in "${label}" row`);
+    }
+    const n = nums.length / 2;
+    return { off: nums.slice(0, n), peak: nums.slice(n), columns: n };
   };
-  const inMiss = grab("1M INPUT TOKENS \\| \\(CACHE MISS\\)");
-  const out = grab("1M OUTPUT TOKENS");
-  const inHit = grab("1M INPUT TOKENS \\| \\(CACHE HIT\\)");
+  const inHit = row("1M INPUT TOKENS[\\s\\S]{0,60}?\\(CACHE HIT\\)", "cache hit");
+  const inMiss = row("1M INPUT TOKENS[\\s\\S]{0,60}?\\(CACHE MISS\\)", "cache miss");
+  const out = row("1M OUTPUT TOKENS", "output");
+  const cols = inMiss.columns;
+  if (apiCols.length !== cols) apiCols = apiCols.slice(0, cols); // trust the table's column count
 
   const TIERS = { tz: "UTC", peakHours: [[1, 4], [6, 10]], peakDays: [1, 2, 3, 4, 5] };
-  const NOTE = "Time-tiered API pricing — app shows the rate effective right now. Peak hours 01:00–04:00 & 06:00–10:00 UTC, Mon–Fri; off-peak is half. Verified from DeepSeek official docs";
+  const tierNote = "Peak hours 01:00–04:00 & 06:00–10:00 UTC, Mon–Fri; off-peak is half of peak. Verified live from DeepSeek official docs";
+  const proRetiring = /retire V4 Pro|V4\.1 Pro is released|routed to V4\.1 Flash/i.test(text);
 
-  const overrides = {
-    "deepseek-v4-flash-0731": {
-      input: inMiss.peak.flash, cached: inHit.peak.flash, output: out.peak.flash,
-      timeTiers: { ...TIERS, offPeak: { input: inMiss.off.flash, cached: inHit.off.flash, output: out.off.flash } },
-      note: NOTE, source: "DeepSeek docs",
-    },
-    "deepseek-v4-pro-0813": {
-      input: inMiss.peak.pro, cached: inHit.peak.pro, output: out.peak.pro,
-      timeTiers: { ...TIERS, offPeak: { input: inMiss.off.pro, cached: inHit.off.pro, output: out.off.pro } },
-      note: NOTE, source: "DeepSeek docs",
-    },
+  // api model name → catalog row (+ legacy names that now bill at Flash prices)
+  const MAP = {
+    "deepseek-flash": { id: "deepseek-v4-1-flash", name: "DeepSeek V4.1 Flash", variant: "flash", isNew: true },
+    "deepseek-v4-pro": { id: "deepseek-v4-pro-0813" },
+    "deepseek-v4-flash": { id: "deepseek-v4-flash-0731", legacyOf: "deepseek-flash" },
+    "deepseek-v4-flash-vision-exp": { id: "deepseek-v4-flash-vision-exp", legacyOf: "deepseek-flash" },
   };
-  const notes = [
-    `v4-flash peak $${inMiss.peak.flash}/$${out.peak.flash} · off-peak $${inMiss.off.flash}/$${out.off.flash}`,
-    `v4-pro peak $${inMiss.peak.pro}/$${out.peak.pro} · off-peak $${inMiss.off.pro}/$${out.off.pro}`,
-  ];
-  return { overrides, notes, url: DEEPSEEK_PRICING_URL };
+  const priceOf = (apiName) => {
+    const i = apiCols.indexOf(apiName);
+    if (i < 0) return null;
+    return {
+      input: inMiss.peak[i], cached: inHit.peak[i], output: out.peak[i],
+      offPeak: { input: inMiss.off[i], cached: inHit.off[i], output: out.off[i] },
+    };
+  };
+
+  const overrides = {};
+  const newModels = [];
+  const notes = [];
+  for (const apiName of apiCols) {
+    const target = MAP[apiName];
+    if (!target) continue;
+    const src = target.legacyOf ? priceOf(target.legacyOf) : priceOf(apiName);
+    if (!src) continue;
+    const rec = {
+      input: src.input, cached: src.cached, output: src.output,
+      timeTiers: { ...TIERS, offPeak: src.offPeak },
+      source: "DeepSeek docs",
+    };
+    if (target.legacyOf) {
+      rec.deprecated = true;
+      rec.note = `Retired API name — requests are served by DeepSeek V4.1 Flash and billed at Flash prices. ${tierNote}`;
+    } else if (target.id === "deepseek-v4-pro-0813") {
+      rec.note = proRetiring
+        ? `${tierNote}. Scheduled: from 2026-09-14 12:00 (+08) deepseek-v4-pro requests route to V4.1 Flash and bill at Flash prices, until V4.1 Pro ships.`
+        : tierNote;
+    } else {
+      rec.note = `Released Sep 2026. ${tierNote}. Legacy names deepseek-v4-flash / -vision-exp are retired and bill at these rates.`;
+    }
+    overrides[target.id] = { ...(overrides[target.id] || {}), ...rec };
+    if (target.isNew) {
+      newModels.push({
+        id: target.id, provider: "DeepSeek", name: target.name, variant: target.variant,
+        input: src.input, cached: src.cached, output: src.output,
+        ctx: "1M", ctxTok: 1000000, type: "Proprietary", score: null, free: false,
+        url: DEEPSEEK_PRICING_URL, officialUrl: DEEPSEEK_PRICING_URL,
+        timeTiers: { ...TIERS, offPeak: src.offPeak },
+        note: rec.note, source: "DeepSeek docs",
+      });
+    }
+    notes.push(`${apiName} peak $${src.input}/$${src.output} · off-peak $${src.offPeak.input}/$${src.offPeak.output}`);
+  }
+  if (!Object.keys(overrides).length) throw new Error("DeepSeek: no rows matched the pricing table");
+  return { overrides, newModels, notes, url: DEEPSEEK_PRICING_URL };
 }
 
 /* ---------------- OpenRouter host prices ----------------
@@ -653,10 +701,12 @@ async function runRefresh(reason = "manual", opts = {}) {
     const providerSources = [];
     const dynamicOverrides = {};
     const parsers = {};
+    const parserNewModels = [];
     for (const [name, fn] of [["zai", scrapeZAI], ["deepseek", scrapeDeepSeek]]) {
       try {
         const r = await fn();
         Object.assign(dynamicOverrides, r.overrides);
+        if (Array.isArray(r.newModels)) parserNewModels.push(...r.newModels);
         parsers[name] = { ok: true, models: Object.keys(r.overrides).length, notes: r.notes };
         providerSources.push({
           name: name === "zai" ? "Z.AI official pricing docs" : "DeepSeek official pricing docs",
@@ -667,6 +717,13 @@ async function runRefresh(reason = "manual", opts = {}) {
         parsers[name] = { ok: false, error: String(e.message || e) };
         log.push(`${name} FAILED: ${e.message} — using static overrides for coverage`);
       }
+    }
+    // models announced in provider docs but missing from the catalog → persist + include
+    if (!dryRun && parserNewModels.length) {
+      try {
+        const p = persistDetected(parserNewModels);
+        if (p) log.push(`auto-added ${p} provider-doc model(s) to overrides.json`);
+      } catch (e) { log.push(`auto-add failed: ${e.message}`); }
     }
 
     // 3) merge: static fallback first, live parser results win per model
@@ -729,6 +786,10 @@ async function runRefresh(reason = "manual", opts = {}) {
 
     // ---- validation gate (before any write) ----
     const validation = validateModels(models, before);
+    // a failed source parser means we silently fell back to static overrides — make it loud
+    for (const [name, p] of Object.entries(parsers)) {
+      if (p.ok === false) validation.warnings.unshift(`SOURCE PARSER FAILED: ${name} — ${p.error} (static overrides used; official data may be stale)`);
+    }
     if (validation.errors.length) {
       const summary = {
         ok: false,
