@@ -83,9 +83,10 @@
       "source": "Z.AI docs"
     },
     "deepseek-v4-flash-0731": {
-      "input": 0.44,
-      "cached": 0.014,
-      "output": 1.32,
+      "input": 0.3,
+      "cached": 0.006,
+      "output": 1.2,
+      "deprecated": true,
       "timeTiers": {
         "tz": "UTC",
         "peakHours": [
@@ -106,13 +107,12 @@
           5
         ],
         "offPeak": {
-          "input": 0.22,
-          "cached": 0.007,
-          "output": 0.66
+          "input": 0.15,
+          "cached": 0.003,
+          "output": 0.6
         }
       },
-      "note": "Time-tiered API pricing — app shows the rate effective right now. Peak hours 01:00–04:00 & 06:00–10:00 UTC, Mon–Fri; off-peak is half. Verified from DeepSeek official docs",
-      "source": "DeepSeek docs"
+      "note": "Retired API name — requests are served by DeepSeek V4.1 Flash and billed at Flash prices. Peak hours 01:00–04:00 & 06:00–10:00 UTC, Mon–Fri; off-peak is half of peak."
     },
     "deepseek-v4-pro-0813": {
       "input": 1.32,
@@ -143,8 +143,7 @@
           "output": 1.98
         }
       },
-      "note": "Time-tiered API pricing — app shows the rate effective right now. Peak hours 01:00–04:00 & 06:00–10:00 UTC, Mon–Fri; off-peak is half. Verified from DeepSeek official docs",
-      "source": "DeepSeek docs"
+      "note": "Peak hours 01:00–04:00 & 06:00–10:00 UTC, Mon–Fri; off-peak is half of peak. Scheduled: from 2026-09-14 12:00 (+08) deepseek-v4-pro requests route to V4.1 Flash and bill at Flash prices, until V4.1 Pro ships."
     },
     "llama-4-behemoth": {
       "note": "Open weights — no hosted API rate found in the dataset (OpenRouter checked). Self-host to run."
@@ -363,6 +362,49 @@
       "officialUrl": "https://openrouter.ai/qwen/qwen3-235b-a22b-thinking-2507",
       "note": "Reseller rate via OpenRouter on 2026-09-06: $0.23 in / $2.3 out per 1M tokens (no first-party API price in the dataset).",
       "source": "OpenRouter (persisted)"
+    },
+    {
+      "id": "deepseek-v4-1-flash",
+      "provider": "DeepSeek",
+      "name": "DeepSeek V4.1 Flash",
+      "variant": "flash",
+      "input": 0.3,
+      "cached": 0.006,
+      "output": 1.2,
+      "ctx": "1M",
+      "ctxTok": 1000000,
+      "type": "Proprietary",
+      "score": null,
+      "url": "https://api-docs.deepseek.com/quick_start/pricing",
+      "officialUrl": "https://api-docs.deepseek.com/quick_start/pricing",
+      "free": false,
+      "timeTiers": {
+        "tz": "UTC",
+        "peakHours": [
+          [
+            1,
+            4
+          ],
+          [
+            6,
+            10
+          ]
+        ],
+        "peakDays": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "offPeak": {
+          "input": 0.15,
+          "cached": 0.003,
+          "output": 0.6
+        }
+      },
+      "note": "Released Sep 2026. Peak hours 01:00–04:00 & 06:00–10:00 UTC, Mon–Fri; off-peak is half of peak. Legacy names deepseek-v4-flash / -vision-exp are retired and bill at these rates.",
+      "source": "DeepSeek docs"
     }
   ],
   "deprecated": [

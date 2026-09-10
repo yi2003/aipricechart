@@ -1,5 +1,40 @@
 [
  {
+  "date": "2026-09-10",
+  "changes": [
+   {
+    "id": "deepseek-v4-flash-0731",
+    "name": "DeepSeek V4 Flash 0731",
+    "provider": "DeepSeek",
+    "field": "input",
+    "from": 0.44,
+    "to": 0.3
+   },
+   {
+    "id": "deepseek-v4-flash-0731",
+    "name": "DeepSeek V4 Flash 0731",
+    "provider": "DeepSeek",
+    "field": "cached",
+    "from": 0.014,
+    "to": 0.006
+   },
+   {
+    "id": "deepseek-v4-flash-0731",
+    "name": "DeepSeek V4 Flash 0731",
+    "provider": "DeepSeek",
+    "field": "output",
+    "from": 1.32,
+    "to": 1.2
+   },
+   {
+    "id": "deepseek-v4-1-flash",
+    "name": "DeepSeek V4.1 Flash",
+    "provider": "DeepSeek",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-09-09",
   "changes": [
    {
