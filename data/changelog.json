@@ -1,5 +1,292 @@
 [
  {
+  "date": "2026-09-11",
+  "changes": [
+   {
+    "id": "qwen-agentworld-35b-a3b",
+    "name": "Qwen-AgentWorld-35B-A3B",
+    "provider": "Alibaba",
+    "added": true
+   },
+   {
+    "id": "qwen3-asr-0-6b",
+    "name": "Qwen3-ASR 0.6B",
+    "provider": "Alibaba",
+    "added": true
+   },
+   {
+    "id": "qwen3-asr-1-7b",
+    "name": "Qwen3-ASR 1.7B",
+    "provider": "Alibaba",
+    "added": true
+   },
+   {
+    "id": "qwen3-omni-30b-a3b-instruct",
+    "name": "Qwen3-Omni-30B-A3B-Instruct",
+    "provider": "Alibaba",
+    "added": true
+   },
+   {
+    "id": "qwen3-omni-30b-a3b-thinking",
+    "name": "Qwen3-Omni-30B-A3B-Thinking",
+    "provider": "Alibaba",
+    "added": true
+   },
+   {
+    "id": "btl-3",
+    "name": "BTL-3",
+    "provider": "Bad Theory Labs",
+    "added": true
+   },
+   {
+    "id": "btl-4-compact",
+    "name": "BTL-4 Compact",
+    "provider": "Bad Theory Labs",
+    "added": true
+   },
+   {
+    "id": "br-voice-reasoner",
+    "name": "BR-Voice-Reasoner",
+    "provider": "Bairong Xdynamics",
+    "added": true
+   },
+   {
+    "id": "cohere-transcribe-arabic-07-2026",
+    "name": "Cohere Transcribe Arabic 07-2026",
+    "provider": "Cohere",
+    "added": true
+   },
+   {
+    "id": "north-micro-vision-instruct",
+    "name": "North Micro Vision Instruct",
+    "provider": "Cohere",
+    "added": true
+   },
+   {
+    "id": "north-mini-code",
+    "name": "North Mini Code",
+    "provider": "Cohere",
+    "added": true
+   },
+   {
+    "id": "north-small-translate",
+    "name": "North Small Translate",
+    "provider": "Cohere",
+    "added": true
+   },
+   {
+    "id": "granite-4-2-30b",
+    "name": "Granite 4.2 30B",
+    "provider": "IBM",
+    "added": true
+   },
+   {
+    "id": "granite-4-2-3b",
+    "name": "Granite 4.2 3B",
+    "provider": "IBM",
+    "added": true
+   },
+   {
+    "id": "granite-speech-5-0-470m-turboctc",
+    "name": "Granite Speech 5.0 470M TurboCTC",
+    "provider": "IBM",
+    "added": true
+   },
+   {
+    "id": "mercury-edit-2",
+    "name": "Mercury Edit 2",
+    "provider": "Inception",
+    "added": true
+   },
+   {
+    "id": "ling-3-0-flash-vl",
+    "name": "Ling 3.0 Flash VL",
+    "provider": "InclusionAI",
+    "added": true
+   },
+   {
+    "id": "ling-3-0-tiny",
+    "name": "Ling 3.0 Tiny",
+    "provider": "InclusionAI",
+    "added": true
+   },
+   {
+    "id": "llada2-2-flash",
+    "name": "LLaDA2.2-flash",
+    "provider": "InclusionAI",
+    "added": true
+   },
+   {
+    "id": "llada2-2-mini",
+    "name": "LLaDA2.2-mini",
+    "provider": "InclusionAI",
+    "added": true
+   },
+   {
+    "id": "agents-a1-4b",
+    "name": "Agents-A1-4B",
+    "provider": "InternScience",
+    "added": true
+   },
+   {
+    "id": "kanana-2-1-3b-instruct",
+    "name": "Kanana-2 1.3B Instruct",
+    "provider": "Kakao",
+    "added": true
+   },
+   {
+    "id": "kanana-2-3b-instruct",
+    "name": "Kanana-2 3B Instruct",
+    "provider": "Kakao",
+    "added": true
+   },
+   {
+    "id": "kyutai-pocket-tts",
+    "name": "Kyutai Pocket TTS",
+    "provider": "Kyutai",
+    "added": true
+   },
+   {
+    "id": "k-exaone-2-0",
+    "name": "K-EXAONE 2.0",
+    "provider": "LG AI Research",
+    "added": true
+   },
+   {
+    "id": "lfm2-5-vl-3b",
+    "name": "LFM2.5-VL-3B",
+    "provider": "LiquidAI",
+    "added": true
+   },
+   {
+    "id": "longcat-flash-lite-sparse",
+    "name": "LongCat-Flash-Lite-Sparse",
+    "provider": "Meituan",
+    "added": true
+   },
+   {
+    "id": "fara1-5-27b",
+    "name": "Fara1.5-27B",
+    "provider": "Microsoft",
+    "added": true
+   },
+   {
+    "id": "fara1-5-4b",
+    "name": "Fara1.5-4B",
+    "provider": "Microsoft",
+    "added": true
+   },
+   {
+    "id": "vibevoice-asr-streaming-1-5b",
+    "name": "VibeVoice-ASR-Streaming 1.5B",
+    "provider": "Microsoft",
+    "added": true
+   },
+   {
+    "id": "vibevoice-asr-streaming-7b",
+    "name": "VibeVoice-ASR-Streaming 7B",
+    "provider": "Microsoft",
+    "added": true
+   },
+   {
+    "id": "leanstral-1-5",
+    "name": "Leanstral 1.5",
+    "provider": "Mistral",
+    "added": true
+   },
+   {
+    "id": "gpt-audio-1-5",
+    "name": "GPT Audio 1.5",
+    "provider": "OpenAI",
+    "added": true
+   },
+   {
+    "id": "minicpm5-2b",
+    "name": "MiniCPM5-2B",
+    "provider": "OpenBMB",
+    "added": true
+   },
+   {
+    "id": "laguna-xs-2-1",
+    "name": "Laguna XS 2.1",
+    "provider": "Poolside",
+    "added": true
+   },
+   {
+    "id": "1-bit-bonsai-27b",
+    "name": "1-bit Bonsai 27B",
+    "provider": "Prism ML",
+    "added": true
+   },
+   {
+    "id": "ternary-bonsai-27b",
+    "name": "Ternary Bonsai 27B",
+    "provider": "Prism ML",
+    "added": true
+   },
+   {
+    "id": "sakana-namazu",
+    "name": "Sakana Namazu",
+    "provider": "Sakana AI",
+    "added": true
+   },
+   {
+    "id": "a-x-k2",
+    "name": "A.X K2",
+    "provider": "SK Telecom",
+    "added": true
+   },
+   {
+    "id": "auk",
+    "name": "AuK",
+    "provider": "Tencent",
+    "added": true
+   },
+   {
+    "id": "ui-mate-27b",
+    "name": "UI-Mate-27B",
+    "provider": "Tencent",
+    "added": true
+   },
+   {
+    "id": "ui-mate-9b",
+    "name": "UI-Mate-9B",
+    "provider": "Tencent",
+    "added": true
+   },
+   {
+    "id": "solar-open-2",
+    "name": "Solar Open 2",
+    "provider": "Upstage",
+    "added": true
+   },
+   {
+    "id": "solar-pro-3",
+    "name": "Solar Pro 3",
+    "provider": "Upstage",
+    "added": true
+   },
+   {
+    "id": "solar-pro-4",
+    "name": "Solar Pro 4",
+    "provider": "Upstage",
+    "added": true
+   },
+   {
+    "id": "zaya1-vl-8b",
+    "name": "ZAYA1-VL-8B",
+    "provider": "Zyphra",
+    "added": true
+   },
+   {
+    "id": "zonos-2",
+    "name": "Zonos 2",
+    "provider": "Zyphra",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-09-10",
   "changes": [
    {
