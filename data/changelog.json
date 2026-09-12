@@ -1,5 +1,82 @@
 [
  {
+  "date": "2026-09-12",
+  "changes": [
+   {
+    "id": "gpt-5-6-luna",
+    "name": "GPT-5.6 Luna",
+    "provider": "OpenAI",
+    "field": "input",
+    "from": 1,
+    "to": 0.2
+   },
+   {
+    "id": "gpt-5-6-luna",
+    "name": "GPT-5.6 Luna",
+    "provider": "OpenAI",
+    "field": "cached",
+    "from": 0.1,
+    "to": 0.02
+   },
+   {
+    "id": "gpt-5-6-luna",
+    "name": "GPT-5.6 Luna",
+    "provider": "OpenAI",
+    "field": "output",
+    "from": 6,
+    "to": 1.2
+   },
+   {
+    "id": "gpt-5-6-sol",
+    "name": "GPT-5.6 Sol",
+    "provider": "OpenAI",
+    "field": "input",
+    "from": 5,
+    "to": 4
+   },
+   {
+    "id": "gpt-5-6-sol",
+    "name": "GPT-5.6 Sol",
+    "provider": "OpenAI",
+    "field": "cached",
+    "from": 0.5,
+    "to": 0.4
+   },
+   {
+    "id": "gpt-5-6-sol",
+    "name": "GPT-5.6 Sol",
+    "provider": "OpenAI",
+    "field": "output",
+    "from": 30,
+    "to": 20
+   },
+   {
+    "id": "gpt-5-6-terra",
+    "name": "GPT-5.6 Terra",
+    "provider": "OpenAI",
+    "field": "input",
+    "from": 2.5,
+    "to": 2
+   },
+   {
+    "id": "gpt-5-6-terra",
+    "name": "GPT-5.6 Terra",
+    "provider": "OpenAI",
+    "field": "cached",
+    "from": 0.25,
+    "to": 0.2
+   },
+   {
+    "id": "gpt-5-6-terra",
+    "name": "GPT-5.6 Terra",
+    "provider": "OpenAI",
+    "field": "output",
+    "from": 15,
+    "to": 12
+   }
+  ]
+ },
+ {
   "date": "2026-09-11",
   "changes": [
    {
