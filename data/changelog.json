@@ -1,5 +1,16 @@
 [
  {
+  "date": "2026-09-15",
+  "changes": [
+   {
+    "id": "atria-dawn-preview",
+    "name": "Atria Dawn Preview",
+    "provider": "Shanghai Artificial Intelligence Laboratory",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-09-12",
   "changes": [
    {
