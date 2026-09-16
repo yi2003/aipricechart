@@ -1,5 +1,22 @@
 [
  {
+  "date": "2026-09-16",
+  "changes": [
+   {
+    "id": "gemini-3-8-live",
+    "name": "Gemini 3.8 Live",
+    "provider": "Google",
+    "added": true
+   },
+   {
+    "id": "gemini-3-8-live-extended-thinking",
+    "name": "Gemini 3.8 Live Extended Thinking",
+    "provider": "Google",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-09-15",
   "changes": [
    {
