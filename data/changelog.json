@@ -1,5 +1,16 @@
 [
  {
+  "date": "2026-09-17",
+  "changes": [
+   {
+    "id": "ternary-bonsai-2-27b",
+    "name": "Ternary Bonsai 2 27B",
+    "provider": "Prism ML",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-09-16",
   "changes": [
    {
