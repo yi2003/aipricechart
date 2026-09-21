@@ -1,5 +1,34 @@
 [
  {
+  "date": "2026-09-21",
+  "changes": [
+   {
+    "id": "step-5-preview",
+    "name": "Step 5 Preview",
+    "provider": "StepFun",
+    "added": true
+   },
+   {
+    "id": "grok-4-7",
+    "name": "Grok 4.7",
+    "provider": "xAI",
+    "added": true
+   },
+   {
+    "id": "mimo-v2-6-flash",
+    "name": "MiMo-V2.6-Flash",
+    "provider": "Xiaomi",
+    "added": true
+   },
+   {
+    "id": "mimo-v2-6-pro",
+    "name": "MiMo-V2.6-Pro",
+    "provider": "Xiaomi",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-09-18",
   "changes": [
    {
