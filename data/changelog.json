@@ -1,5 +1,74 @@
 [
  {
+  "date": "2026-09-25",
+  "changes": [
+   {
+    "id": "gemini-3-6-flash",
+    "name": "Gemini 3.6 Flash",
+    "provider": "Google",
+    "field": "input",
+    "from": 1.5,
+    "to": 0.75
+   },
+   {
+    "id": "gemini-3-6-flash",
+    "name": "Gemini 3.6 Flash",
+    "provider": "Google",
+    "field": "cached",
+    "from": 0.15,
+    "to": 0.075
+   },
+   {
+    "id": "gemini-3-6-flash",
+    "name": "Gemini 3.6 Flash",
+    "provider": "Google",
+    "field": "output",
+    "from": 7.5,
+    "to": 3.75
+   },
+   {
+    "id": "kimi-2-6",
+    "name": "Kimi 2.6",
+    "provider": "Moonshot AI",
+    "field": "cached",
+    "from": null,
+    "to": 0.16
+   },
+   {
+    "id": "kimi-k2-7-code",
+    "name": "Kimi K2.7 Code",
+    "provider": "Moonshot AI",
+    "field": "cached",
+    "from": null,
+    "to": 0.19
+   },
+   {
+    "id": "grok-4-20-beta",
+    "name": "Grok 4.20",
+    "provider": "xAI",
+    "field": "input",
+    "from": 2,
+    "to": 1.25
+   },
+   {
+    "id": "grok-4-20-beta",
+    "name": "Grok 4.20",
+    "provider": "xAI",
+    "field": "cached",
+    "from": null,
+    "to": 0.2
+   },
+   {
+    "id": "grok-4-20-beta",
+    "name": "Grok 4.20",
+    "provider": "xAI",
+    "field": "output",
+    "from": 6,
+    "to": 2.5
+   }
+  ]
+ },
+ {
   "date": "2026-09-22",
   "changes": [
    {
