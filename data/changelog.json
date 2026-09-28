@@ -1,5 +1,22 @@
 [
  {
+  "date": "2026-09-28",
+  "changes": [
+   {
+    "id": "claude-sonnet-5-5",
+    "name": "Claude Sonnet 5.5",
+    "provider": "Anthropic",
+    "added": true
+   },
+   {
+    "id": "ember-1",
+    "name": "Ember-1",
+    "provider": "Fireworks",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-09-25",
   "changes": [
    {
