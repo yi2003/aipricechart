@@ -1,5 +1,22 @@
 [
  {
+  "date": "2026-09-29",
+  "changes": [
+   {
+    "id": "mercury-voice",
+    "name": "Mercury Voice",
+    "provider": "Inception",
+    "added": true
+   },
+   {
+    "id": "gpt-6-1-sol",
+    "name": "GPT-6.1 Sol",
+    "provider": "OpenAI",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-09-28",
   "changes": [
    {
