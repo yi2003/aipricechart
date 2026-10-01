@@ -1,5 +1,604 @@
 [
  {
+  "date": "2026-10-01",
+  "changes": [
+   {
+    "id": "spark-s1-4b-v6-open-spark-jev-abhishek085",
+    "name": "spark-s1-4b-v6 (Open Spark Jev, abhishek085)",
+    "provider": "Abhishek Rai (abhishek085)",
+    "added": true
+   },
+   {
+    "id": "smalljev-semantic-v9",
+    "name": "smalljev semantic-v9",
+    "provider": "Aditya (isHeSatoshi)",
+    "added": true
+   },
+   {
+    "id": "jev-omni-akhilaaa3-gemma-4-12b-merged",
+    "name": "Jev-Omni (akhilaaa3, Gemma-4-12B merged)",
+    "provider": "akhilaaa3",
+    "added": true
+   },
+   {
+    "id": "raw-qwen3-0-6b-direct-logits",
+    "name": "Raw Qwen3 0.6B direct logits",
+    "provider": "Alibaba Qwen / neutral reproduction",
+    "added": true
+   },
+   {
+    "id": "raw-qwen3-1-7b-direct-logits",
+    "name": "Raw Qwen3 1.7B direct logits",
+    "provider": "Alibaba Qwen / neutral reproduction",
+    "added": true
+   },
+   {
+    "id": "raw-qwen3-4b-instruct-2507-direct-logits",
+    "name": "Raw Qwen3 4B Instruct 2507 direct logits",
+    "provider": "Alibaba Qwen / neutral reproduction",
+    "added": true
+   },
+   {
+    "id": "raw-qwen3-8b-direct-logits",
+    "name": "Raw Qwen3 8B direct logits",
+    "provider": "Alibaba Qwen / neutral reproduction",
+    "added": true
+   },
+   {
+    "id": "alibaba-gte-reranker-modernbert-base",
+    "name": "Alibaba GTE Reranker ModernBERT-base",
+    "provider": "Alibaba-NLP",
+    "added": true
+   },
+   {
+    "id": "certo-v1-altslate-labs",
+    "name": "Certo v1 (AltSlate Labs)",
+    "provider": "AltSlate Labs",
+    "added": true
+   },
+   {
+    "id": "local-jev-qwen3-5-4b",
+    "name": "local-jev Qwen3.5-4B",
+    "provider": "Amith Chandrappa (amithgc)",
+    "added": true
+   },
+   {
+    "id": "baai-bge-reranker-v2-m3",
+    "name": "BAAI bge-reranker-v2-m3",
+    "provider": "BAAI",
+    "added": true
+   },
+   {
+    "id": "bespoke-nimble-9b-bespoke-labs",
+    "name": "Bespoke Nimble 9B (Bespoke Labs)",
+    "provider": "Bespoke Labs",
+    "added": true
+   },
+   {
+    "id": "cygnet-blockbrain-frozen-gemma-4-12b-it",
+    "name": "Cygnet (blockbrain, frozen Gemma-4-12B-it)",
+    "provider": "blockbrain",
+    "added": true
+   },
+   {
+    "id": "swanone-blockbrain-qwen3-8-flash-next-nvfp4",
+    "name": "swanOne (blockbrain, Qwen3.8-Flash-Next NVFP4)",
+    "provider": "blockbrain",
+    "added": true
+   },
+   {
+    "id": "mirror",
+    "name": "Mirror",
+    "provider": "Bluusun",
+    "added": true
+   },
+   {
+    "id": "needle-3-cactus-2-bit-local-cpu",
+    "name": "Needle 3 (Cactus, 2-bit, local CPU)",
+    "provider": "Cactus Compute",
+    "added": true
+   },
+   {
+    "id": "needle-3-options-as-tools-post-hoc-adapter-mode",
+    "name": "Needle 3, options as tools (post-hoc adapter mode)",
+    "provider": "Cactus Compute",
+    "added": true
+   },
+   {
+    "id": "bosun-v3-1-0-6b",
+    "name": "Bosun v3.1 0.6B",
+    "provider": "Clause Logic",
+    "added": true
+   },
+   {
+    "id": "clm-8b-contrastive-lm-clm-latest",
+    "name": "CLM-8B (Contrastive-LM, clm-latest)",
+    "provider": "Contrastive-LM (Kwok, Kang, Suresh, Saad-Falcon, Pavone, Ré, Mirhoseini)",
+    "added": true
+   },
+   {
+    "id": "laya-convai-innovations-modernbert-large-421m",
+    "name": "Laya (Convai Innovations, ModernBERT-large 421M)",
+    "provider": "Convai Innovations",
+    "added": true
+   },
+   {
+    "id": "laya-multilingual",
+    "name": "Laya multilingual",
+    "provider": "Convai Innovations",
+    "added": true
+   },
+   {
+    "id": "laya-typed-decisions",
+    "name": "Laya typed-decisions",
+    "provider": "Convai Innovations",
+    "added": true
+   },
+   {
+    "id": "plumb-4b-crh225-jevk5-v0-2-lora",
+    "name": "Plumb-4B (crh225, JevK5 v0.2 + LoRA)",
+    "provider": "crh225",
+    "added": true
+   },
+   {
+    "id": "djev-thinking",
+    "name": "djev (thinking)",
+    "provider": "David Villalon / Maisa",
+    "added": true
+   },
+   {
+    "id": "opendecision-modernbert-large-zero-shot",
+    "name": "OpenDecision (ModernBERT-large zero-shot)",
+    "provider": "Deepan Wadhwa",
+    "added": true
+   },
+   {
+    "id": "deepseek-v3-0324",
+    "name": "DeepSeek V3 0324",
+    "provider": "DeepSeek",
+    "added": true
+   },
+   {
+    "id": "openjev-sglang-qwen3-6-35b-a3b-on-sglang",
+    "name": "openjev-sglang (Qwen3.6-35B-A3B on SGLang)",
+    "provider": "ekzhang",
+    "added": true
+   },
+   {
+    "id": "winnow-12b-q8",
+    "name": "Winnow-12B Q8",
+    "provider": "Eldan Ring",
+    "added": true
+   },
+   {
+    "id": "decision-4b-eval-engine-chromia",
+    "name": "Decision-4B (Eval Engine / Chromia)",
+    "provider": "Eval Engine / Chromia",
+    "added": true
+   },
+   {
+    "id": "gliner2-fastino-gliner2-5-base",
+    "name": "GLiNER2 (Fastino, gliner2.5-base)",
+    "provider": "Fastino",
+    "added": true
+   },
+   {
+    "id": "gliner2-large-fastino",
+    "name": "GLiNER2 large (Fastino)",
+    "provider": "Fastino",
+    "added": true
+   },
+   {
+    "id": "gliner2-5-multi-fastino-287m",
+    "name": "GLiNER2.5 multi (Fastino, 287M)",
+    "provider": "Fastino",
+    "added": true
+   },
+   {
+    "id": "gliner2-5-small-fastino-74m",
+    "name": "GLiNER2.5 small (Fastino, 74M)",
+    "provider": "Fastino",
+    "added": true
+   },
+   {
+    "id": "simplejev-qwen3-6-35b-a3b",
+    "name": "SimpleJev Qwen3.6-35B-A3B",
+    "provider": "Featherless AI",
+    "added": true
+   },
+   {
+    "id": "simplejev-qwen3-8-27b",
+    "name": "SimpleJev Qwen3.8-27B",
+    "provider": "Featherless AI",
+    "added": true
+   },
+   {
+    "id": "phonon-1",
+    "name": "Phonon-1",
+    "provider": "Fermion Research",
+    "added": true
+   },
+   {
+    "id": "phonon-2",
+    "name": "Phonon-2",
+    "provider": "Fermion Research",
+    "added": true
+   },
+   {
+    "id": "decision-2b-flymy-ai-v59",
+    "name": "Decision 2B (FlyMy.AI, v59)",
+    "provider": "FlyMy.AI (@denti)",
+    "added": true
+   },
+   {
+    "id": "decision-fast-flymy-ai-v53a",
+    "name": "Decision Fast (FlyMy.AI, v53a)",
+    "provider": "FlyMy.AI (@denti)",
+    "added": true
+   },
+   {
+    "id": "lev-350m-franck-verrot-lfm2-5-350m",
+    "name": "lev-350m (Franck Verrot, LFM2.5-350M)",
+    "provider": "Franck Verrot (franckverrot)",
+    "added": true
+   },
+   {
+    "id": "gemini-4-argon",
+    "name": "Gemini 4 Argon",
+    "provider": "Google",
+    "added": true
+   },
+   {
+    "id": "openjev-verdict-heman10x-modernbert-base-151m",
+    "name": "openJev Verdict (heman10x, ModernBERT-base 151M)",
+    "provider": "Hemant (heman10x)",
+    "added": true
+   },
+   {
+    "id": "openjev-verdict-1-4",
+    "name": "openJev Verdict 1.4",
+    "provider": "Hemant (heman10x)",
+    "added": true
+   },
+   {
+    "id": "jqv-qwen3-32b-zero-shot",
+    "name": "jqv (Qwen3-32B zero-shot)",
+    "provider": "hjmurmur (Octalab)",
+    "added": true
+   },
+   {
+    "id": "hopper",
+    "name": "Hopper",
+    "provider": "HopitAI",
+    "added": true
+   },
+   {
+    "id": "ninfer-qwen3-8-27b-nvfp4",
+    "name": "NInfer Qwen3.8-27B NVFP4",
+    "provider": "Igor L. / NInfer contributors",
+    "added": true
+   },
+   {
+    "id": "ninfer-qwen3-8-27b-nvfp4-t-1-5",
+    "name": "NInfer Qwen3.8-27B NVFP4 (T=1.5)",
+    "provider": "Igor L. / NInfer contributors",
+    "added": true
+   },
+   {
+    "id": "ninfer-qwen3-8-flash-next-mixed",
+    "name": "NInfer Qwen3.8-Flash-Next mixed",
+    "provider": "Igor L. / NInfer contributors",
+    "added": true
+   },
+   {
+    "id": "open-alternative-jev-qwen3-5-4b-ikermoel",
+    "name": "open-alternative-jev (Qwen3.5-4B, IkerMoel)",
+    "provider": "IkerMoel",
+    "added": true
+   },
+   {
+    "id": "kev-0-5b",
+    "name": "kev 0.5B",
+    "provider": "Jared Palmer",
+    "added": true
+   },
+   {
+    "id": "kev-0-6b-research-preview",
+    "name": "kev 0.6B (research preview)",
+    "provider": "Jared Palmer",
+    "added": true
+   },
+   {
+    "id": "kev-4b-research-preview",
+    "name": "kev 4B (research preview)",
+    "provider": "Jared Palmer",
+    "added": true
+   },
+   {
+    "id": "kev-8b-research-preview",
+    "name": "kev 8B (research preview)",
+    "provider": "Jared Palmer",
+    "added": true
+   },
+   {
+    "id": "open-jev-json-canvas-joshuasp",
+    "name": "Open Jev JSON Canvas (JoshuaSP)",
+    "provider": "JoshuaSP",
+    "added": true
+   },
+   {
+    "id": "jevone",
+    "name": "JevOne",
+    "provider": "Juspay",
+    "added": true
+   },
+   {
+    "id": "open-jev-deberta-v3-large-local-cpu",
+    "name": "open-jev-deberta-v3-large (local CPU)",
+    "provider": "Kotoba Labs",
+    "added": true
+   },
+   {
+    "id": "reflex-4b-kshetrajna12",
+    "name": "reflex 4B (kshetrajna12)",
+    "provider": "kshetrajna12",
+    "added": true
+   },
+   {
+    "id": "reflex-27b-qwen3-8-27b",
+    "name": "reflex-27b (Qwen3.8-27B)",
+    "provider": "kshetrajna12",
+    "added": true
+   },
+   {
+    "id": "deem-0-8b-v1",
+    "name": "Deem 0.8B v1",
+    "provider": "LibertAI",
+    "added": true
+   },
+   {
+    "id": "jeff-logan-markewich-gliformer-400m",
+    "name": "jeff (Logan Markewich, GLiFormer 400M)",
+    "provider": "Logan Markewich",
+    "added": true
+   },
+   {
+    "id": "djev-maisa-diffusion-gemma",
+    "name": "djev (Maisa, diffusion-gemma)",
+    "provider": "Maisa (David Villalón)",
+    "added": true
+   },
+   {
+    "id": "verdict-small-manavarya09-multilingual-e5-small-118m",
+    "name": "verdict-small (Manavarya09, multilingual-e5-small 118M)",
+    "provider": "Manavarya09 (Manav)",
+    "added": true
+   },
+   {
+    "id": "jobe-qwen3-5-4b-frozen",
+    "name": "Jobe Qwen3.5-4B (frozen)",
+    "provider": "MantisShrimpdev",
+    "added": true
+   },
+   {
+    "id": "decider-2b-mapika",
+    "name": "decider-2b (Mapika)",
+    "provider": "Mapika",
+    "added": true
+   },
+   {
+    "id": "decider-35b-a3b-mapika",
+    "name": "decider-35b-a3b (Mapika)",
+    "provider": "Mapika",
+    "added": true
+   },
+   {
+    "id": "decider-4b-v2-mapika",
+    "name": "decider-4b v2 (Mapika)",
+    "provider": "Mapika",
+    "added": true
+   },
+   {
+    "id": "raw-phi-4-mini-direct-logits",
+    "name": "Raw Phi-4 mini direct logits",
+    "provider": "Microsoft / neutral reproduction",
+    "added": true
+   },
+   {
+    "id": "typecastlm-mikhail-gribov-qwen3-5-4b-computed-head",
+    "name": "typecastlm (Mikhail Gribov, Qwen3.5-4B computed head)",
+    "provider": "Mikhail Gribov",
+    "added": true
+   },
+   {
+    "id": "voxtral-mini-4b-realtime-2602",
+    "name": "Voxtral Mini 4B Realtime 2602",
+    "provider": "Mistral",
+    "added": true
+   },
+   {
+    "id": "system-one-open-gemma-4-e2b-lora-on-an-l4",
+    "name": "system-one-open (Gemma 4 E2B LoRA on an L4)",
+    "provider": "mithalouni",
+    "added": true
+   },
+   {
+    "id": "mixedbread-mxbai-rerank-base-v2",
+    "name": "Mixedbread mxbai-rerank-base-v2",
+    "provider": "Mixedbread",
+    "added": true
+   },
+   {
+    "id": "imajev-4b",
+    "name": "Imajev-4B",
+    "provider": "mohit67890",
+    "added": true
+   },
+   {
+    "id": "parakeet-redux",
+    "name": "Parakeet Redux",
+    "provider": "Moondream",
+    "added": true
+   },
+   {
+    "id": "qwen3-5-0-8b-decision-model-mourad-ghafiri",
+    "name": "Qwen3.5-0.8B Decision Model (Mourad Ghafiri)",
+    "provider": "Mourad Ghafiri",
+    "added": true
+   },
+   {
+    "id": "malkuth-2b-newfull5-kev-post-train",
+    "name": "Malkuth-2B (newfull5, Kev post-train)",
+    "provider": "newfull5 (dhtocks)",
+    "added": true
+   },
+   {
+    "id": "malkuth-4b-newfull5-kev-post-train",
+    "name": "Malkuth-4B (newfull5, Kev post-train)",
+    "provider": "newfull5 (dhtocks)",
+    "added": true
+   },
+   {
+    "id": "canary-180m-flash",
+    "name": "Canary 180M Flash",
+    "provider": "NVIDIA",
+    "added": true
+   },
+   {
+    "id": "nemotron-3-5-asr-streaming-0-6b",
+    "name": "Nemotron 3.5 ASR Streaming 0.6B",
+    "provider": "NVIDIA",
+    "added": true
+   },
+   {
+    "id": "parakeet-tdt-0-6b-v3",
+    "name": "Parakeet TDT 0.6B v3",
+    "provider": "NVIDIA",
+    "added": true
+   },
+   {
+    "id": "whisper-large-v3-turbo",
+    "name": "Whisper large-v3-turbo",
+    "provider": "OpenAI",
+    "added": true
+   },
+   {
+    "id": "manchego-v2-1",
+    "name": "Manchego v2.1",
+    "provider": "oraculumai",
+    "added": true
+   },
+   {
+    "id": "nemotron-diffusion-8b-pst2154-optimized-vllm",
+    "name": "Nemotron Diffusion 8B (pst2154, optimized vLLM)",
+    "provider": "pst2154",
+    "added": true
+   },
+   {
+    "id": "qwen3-reranker-4b",
+    "name": "Qwen3-Reranker-4B",
+    "provider": "Qwen",
+    "added": true
+   },
+   {
+    "id": "qwen3-8-27b-chutes-tee",
+    "name": "Qwen3.8 27B (Chutes TEE)",
+    "provider": "Qwen / Chutes",
+    "added": true
+   },
+   {
+    "id": "openjev-thinking-bf16",
+    "name": "OpenJev (thinking, BF16)",
+    "provider": "razorback16",
+    "added": true
+   },
+   {
+    "id": "openjev-diffusiongemma-26b-a4b-nvfp4-razorback16",
+    "name": "OpenJev (DiffusionGemma 26B-A4B NVFP4, razorback16)",
+    "provider": "razorback16 / Codiv",
+    "added": true
+   },
+   {
+    "id": "bev-bonsai-27b",
+    "name": "Bev / Bonsai 27B",
+    "provider": "Reza Sayar",
+    "added": true
+   },
+   {
+    "id": "simplejev-qwen3-5-0-8b-cpu",
+    "name": "SimpleJev (Qwen3.5-0.8B, CPU)",
+    "provider": "sabeel111 / Featherless AI",
+    "added": true
+   },
+   {
+    "id": "system-one-qwen3-8b-sean-goedecke",
+    "name": "system-one (Qwen3-8B, Sean Goedecke)",
+    "provider": "Sean Goedecke",
+    "added": true
+   },
+   {
+    "id": "standard-one-8b-standard-thinking",
+    "name": "Standard One 8B (Standard Thinking)",
+    "provider": "Standard Thinking (myeongho12)",
+    "added": true
+   },
+   {
+    "id": "semif-formerly-openjev-qwen3-5-4b-theoleecj",
+    "name": "SemIf, formerly OpenJev (Qwen3.5-4B, TheoLeeCJ)",
+    "provider": "Theodore Lee (TheoLeeCJ)",
+    "added": true
+   },
+   {
+    "id": "jev-local-qwen3-5-9b",
+    "name": "jev-local (Qwen3.5-9B)",
+    "provider": "us (GitHub)",
+    "added": true
+   },
+   {
+    "id": "moonshine-tiny",
+    "name": "Moonshine Tiny",
+    "provider": "Useful Sensors",
+    "added": true
+   },
+   {
+    "id": "metask-jev-4b",
+    "name": "metask-jev-4b",
+    "provider": "Wayfind (metask-ai)",
+    "added": true
+   },
+   {
+    "id": "jev-qwen3-5-9b-base-nvfp4",
+    "name": "JEV Qwen3.5-9B Base NVFP4",
+    "provider": "WilfLin",
+    "added": true
+   },
+   {
+    "id": "open-jev-2b-zefan-cai",
+    "name": "Open-Jev 2B (Zefan Cai)",
+    "provider": "Zefan Cai (@Zefan_Cai)",
+    "added": true
+   },
+   {
+    "id": "open-jev-9b-zefan-cai",
+    "name": "Open-Jev 9B (Zefan Cai)",
+    "provider": "Zefan Cai (@Zefan_Cai)",
+    "added": true
+   },
+   {
+    "id": "zeroentropy-zerank-2",
+    "name": "ZeroEntropy zerank-2",
+    "provider": "ZeroEntropy",
+    "added": true
+   },
+   {
+    "id": "litjev-qwen3-8-27b",
+    "name": "LitJev (Qwen3.8-27B)",
+    "provider": "Zhengxu Yu",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-09-29",
   "changes": [
    {
