@@ -1,5 +1,346 @@
 [
  {
+  "date": "2026-10-07",
+  "changes": [
+   {
+    "id": "jevk5-9b-v0-3-3",
+    "name": "JevK5 9B v0.3.3",
+    "provider": "alibiserikbay",
+    "added": true
+   },
+   {
+    "id": "jevk5-lite",
+    "name": "JevK5 Lite",
+    "provider": "alibiserikbay",
+    "added": true
+   },
+   {
+    "id": "jevstral-8b",
+    "name": "Jevstral 8B",
+    "provider": "AmirBraham",
+    "added": true
+   },
+   {
+    "id": "ajev-lora5-gemma-4-12b",
+    "name": "AJev lora5 (Gemma 4 12B)",
+    "provider": "andyzhang232",
+    "added": true
+   },
+   {
+    "id": "gev-26b-decide",
+    "name": "GEV-26B-Decide",
+    "provider": "autotrust",
+    "added": true
+   },
+   {
+    "id": "jev-27b",
+    "name": "JEV-27B",
+    "provider": "autotrust",
+    "added": true
+   },
+   {
+    "id": "jev-9b",
+    "name": "JEV-9B",
+    "provider": "autotrust",
+    "added": true
+   },
+   {
+    "id": "bespoke-nimble-9b-v2",
+    "name": "Bespoke Nimble 9B v2",
+    "provider": "bespokelabs",
+    "added": true
+   },
+   {
+    "id": "bespoke-nimble-9b-v3",
+    "name": "Bespoke Nimble 9B v3",
+    "provider": "bespokelabs",
+    "added": true
+   },
+   {
+    "id": "quyet-1-0-large",
+    "name": "Quyet-1.0-Large",
+    "provider": "chinhnc",
+    "added": true
+   },
+   {
+    "id": "clm-v0-1-8b",
+    "name": "CLM-v0.1-8B",
+    "provider": "Contrastive-LM",
+    "added": true
+   },
+   {
+    "id": "kodiak-v0-2-1b-accuracy",
+    "name": "Kodiak v0.2 1B (accuracy)",
+    "provider": "cortex-agent-llc",
+    "added": true
+   },
+   {
+    "id": "gevva-e2b",
+    "name": "Gevva E2B",
+    "provider": "davidburhans",
+    "added": true
+   },
+   {
+    "id": "gevva-e4b",
+    "name": "Gevva E4B",
+    "provider": "davidburhans",
+    "added": true
+   },
+   {
+    "id": "winnow-e4b",
+    "name": "Winnow-E4B",
+    "provider": "EldanRing",
+    "added": true
+   },
+   {
+    "id": "jiwo-0-8b",
+    "name": "jiwo 0.8B",
+    "provider": "eljiwo",
+    "added": true
+   },
+   {
+    "id": "jiwo-4b",
+    "name": "jiwo 4B",
+    "provider": "eljiwo",
+    "added": true
+   },
+   {
+    "id": "ezjev-4b-s2",
+    "name": "ezjev 4B s2",
+    "provider": "everettjf",
+    "added": true
+   },
+   {
+    "id": "gliner2-5-decide",
+    "name": "GLiNER2.5-Decide",
+    "provider": "fastino",
+    "added": true
+   },
+   {
+    "id": "jebadiah-27b",
+    "name": "Jebadiah 27B",
+    "provider": "frontier-infra",
+    "added": true
+   },
+   {
+    "id": "embeddinggemma-2",
+    "name": "EmbeddingGemma 2",
+    "provider": "Google",
+    "added": true
+   },
+   {
+    "id": "bosun-v3-1-1-7b",
+    "name": "Bosun v3.1 1.7B",
+    "provider": "Hanno-Labs",
+    "added": true
+   },
+   {
+    "id": "qwen-2-5-1b-rlcd",
+    "name": "Qwen-2.5-1B-RLCD",
+    "provider": "harshatheg",
+    "added": true
+   },
+   {
+    "id": "hopper-g-1-2",
+    "name": "Hopper (G) 1.2",
+    "provider": "HopitAI",
+    "added": true
+   },
+   {
+    "id": "bekko-system-one-v0-17m",
+    "name": "Bekko System One v0 17M",
+    "provider": "hotchpotch",
+    "added": true
+   },
+   {
+    "id": "bekko-system-one-v0-400m",
+    "name": "Bekko System One v0 400M",
+    "provider": "hotchpotch",
+    "added": true
+   },
+   {
+    "id": "bekko-system-one-v0-68m",
+    "name": "Bekko System One v0 68M",
+    "provider": "hotchpotch",
+    "added": true
+   },
+   {
+    "id": "lev",
+    "name": "lev",
+    "provider": "interfaze-ai",
+    "added": true
+   },
+   {
+    "id": "intern-decision-0-8b",
+    "name": "Intern-Decision-0.8B",
+    "provider": "internlm",
+    "added": true
+   },
+   {
+    "id": "intern-decision-2b",
+    "name": "Intern-Decision-2B",
+    "provider": "internlm",
+    "added": true
+   },
+   {
+    "id": "intern-decision-4b",
+    "name": "Intern-Decision-4B",
+    "provider": "internlm",
+    "added": true
+   },
+   {
+    "id": "kev-27b",
+    "name": "Kev 27B",
+    "provider": "jaredpalmer",
+    "added": true
+   },
+   {
+    "id": "kev-4b-r10",
+    "name": "Kev 4B r10",
+    "provider": "jaredpalmer",
+    "added": true
+   },
+   {
+    "id": "xor-26b-a4b",
+    "name": "Xor 26B-A4B",
+    "provider": "juspay",
+    "added": true
+   },
+   {
+    "id": "jpt-0-8b",
+    "name": "JPT-0.8B",
+    "provider": "kirp",
+    "added": true
+   },
+   {
+    "id": "jpt-35b-a3b",
+    "name": "JPT-35B-A3B",
+    "provider": "kirp",
+    "added": true
+   },
+   {
+    "id": "jpt-4b",
+    "name": "JPT-4B",
+    "provider": "kirp",
+    "added": true
+   },
+   {
+    "id": "jpt-9b",
+    "name": "JPT-9B",
+    "provider": "kirp",
+    "added": true
+   },
+   {
+    "id": "kas-4b",
+    "name": "Kas 4B",
+    "provider": "kpiya",
+    "added": true
+   },
+   {
+    "id": "dinah-0",
+    "name": "Dinah-0",
+    "provider": "Lukitaduarte",
+    "added": true
+   },
+   {
+    "id": "decider-4b",
+    "name": "Decider 4B",
+    "provider": "Mapika",
+    "added": true
+   },
+   {
+    "id": "jet-v6-2",
+    "name": "Jet v6.2",
+    "provider": "michaljach",
+    "added": true
+   },
+   {
+    "id": "mistral-large-4",
+    "name": "Mistral Large 4",
+    "provider": "Mistral",
+    "added": true
+   },
+   {
+    "id": "lavoir",
+    "name": "Lavoir",
+    "provider": "moganai",
+    "added": true
+   },
+   {
+    "id": "lfm2-5-2-6b-rlcd",
+    "name": "LFM2.5-2.6B-RLCD",
+    "provider": "monotykamary",
+    "added": true
+   },
+   {
+    "id": "lfm2-5-350m-rlcd",
+    "name": "LFM2.5-350M-RLCD",
+    "provider": "notnotsamuel",
+    "added": true
+   },
+   {
+    "id": "onejev-0-8b",
+    "name": "OneJev 0.8B",
+    "provider": "OmniJev",
+    "added": true
+   },
+   {
+    "id": "perplexity-decider-v1-1-27b",
+    "name": "Perplexity Decider v1.1 (27B)",
+    "provider": "Perplexity",
+    "added": true
+   },
+   {
+    "id": "blink-v0-3-26b-a4b-nvfp4",
+    "name": "Blink v0.3 26B-A4B (NVFP4)",
+    "provider": "PixilabAI",
+    "added": true
+   },
+   {
+    "id": "rsi-jev-v5-0-vl-3b",
+    "name": "RSI-Jev v5.0 VL 3B",
+    "provider": "shgao",
+    "added": true
+   },
+   {
+    "id": "sieve-2b",
+    "name": "Sieve 2B",
+    "provider": "sthanika-ai",
+    "added": true
+   },
+   {
+    "id": "sieve-9b",
+    "name": "Sieve 9B",
+    "provider": "sthanika-ai",
+    "added": true
+   },
+   {
+    "id": "julia-1",
+    "name": "Julia 1",
+    "provider": "SupersonicLabs",
+    "added": true
+   },
+   {
+    "id": "tev1-0-8b-experimental",
+    "name": "Tev1-0.8B-experimental",
+    "provider": "togethercomputer",
+    "added": true
+   },
+   {
+    "id": "tev1-4b-experimental",
+    "name": "Tev1-4B-experimental",
+    "provider": "togethercomputer",
+    "added": true
+   },
+   {
+    "id": "neohorse-jev-4b",
+    "name": "NeoHorse-Jev-4B",
+    "provider": "TokenRhythm",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-10-02",
   "changes": [
    {
@@ -2013,61 +2354,6 @@
     "field": "output",
     "from": 0.25,
     "to": 0.5
-   }
-  ]
- },
- {
-  "date": "2026-09-06",
-  "changes": [
-   {
-    "id": "qwen3-8-max",
-    "name": "Qwen3.8 Max",
-    "provider": "Alibaba",
-    "field": "input",
-    "from": null,
-    "to": 2
-   },
-   {
-    "id": "qwen3-8-max",
-    "name": "Qwen3.8 Max",
-    "provider": "Alibaba",
-    "field": "output",
-    "from": null,
-    "to": 6
-   }
-  ]
- },
- {
-  "date": "2026-09-04",
-  "changes": [
-   {
-    "id": "gpt-5-6-cyber",
-    "name": "GPT-5.6 Cyber",
-    "provider": "OpenAI",
-    "added": true
-   },
-   {
-    "id": "gpt-realtime-2-1",
-    "name": "GPT-Realtime-2.1",
-    "provider": "OpenAI",
-    "added": true
-   },
-   {
-    "id": "gpt-realtime-2-1-mini",
-    "name": "GPT-Realtime-2.1 Mini",
-    "provider": "OpenAI",
-    "added": true
-   }
-  ]
- },
- {
-  "date": "2026-09-03",
-  "changes": [
-   {
-    "id": "gpt-6-astra",
-    "name": "GPT-6 Astra",
-    "provider": "OpenAI",
-    "added": true
    }
   ]
  }
