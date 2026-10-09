@@ -1,5 +1,38 @@
 [
  {
+  "date": "2026-10-09",
+  "changes": [
+   {
+    "id": "celeris-1-decision",
+    "name": "Celeris-1 Decision",
+    "provider": "Celeris",
+    "added": true
+   },
+   {
+    "id": "glide",
+    "name": "GLiDE",
+    "provider": "Fastino",
+    "field": "input",
+    "from": 0.3,
+    "to": 0.15
+   },
+   {
+    "id": "mellum2-1-12b-a2-5b-thinking",
+    "name": "Mellum2.1-12B-A2.5B-Thinking",
+    "provider": "JetBrains",
+    "added": true
+   },
+   {
+    "id": "perplexity-decider-v1-27b",
+    "name": "Perplexity Decider v1 27B",
+    "provider": "Perplexity",
+    "field": "input",
+    "from": 0.04,
+    "to": 0.02
+   }
+  ]
+ },
+ {
   "date": "2026-10-07",
   "changes": [
    {
