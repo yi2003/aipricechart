@@ -53,6 +53,8 @@ async function fetchText(url, timeoutMs = 25000) {
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const trimZeros = (s) => String(s).replace(/\.?0+$/, "");
+// same slug style as BenchLM ids: "Gemini 2.5 Flash-Lite" → "gemini-2-5-flash-lite"
+const slugify = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 const fmtCtx = (n) => {
   if (!n) return null;
   if (n >= 1_000_000) return trimZeros((n / 1_000_000).toFixed(2)) + "M";
@@ -87,8 +89,11 @@ async function scrapeBenchLM() {
     const priced = r.inputPrice != null || r.outputPrice != null;
     const openw = r.sourceType === "Open Weight";
     if (!priced && !openw) continue;
+    // BenchLM occasionally ships a row without `slug` — derive it rather than emit an id-less row
+    const id = r.slug || slugify(r.model);
+    if (!id) continue;
     models.push({
-      id: r.slug,
+      id,
       provider: CREATORS_RENAME[r.creator] || r.creator,
       name: r.model,
       variant: r.variantType || null,
@@ -98,8 +103,9 @@ async function scrapeBenchLM() {
       ctx: fmtCtx(r.contextSize),
       ctxTok: r.contextSize || null,
       type: r.sourceType || "Unknown",
-      score: r.overallScore ?? null,
-      url: `https://benchlm.ai/models/${r.slug}`,
+      // field was renamed overallScore → displayScore (Oct 2026); accept either
+      score: r.displayScore ?? r.overallScore ?? null,
+      url: `https://benchlm.ai/models/${id}`,
       free: false,
       note: null,
     });
@@ -442,7 +448,17 @@ function updateChangelog(changes, models) {
     }),
   };
   const idx = log.findIndex((e) => e.date === entry.date);
-  if (idx >= 0) log[idx] = entry; else log.unshift(entry);
+  if (idx >= 0) {
+    // same-day re-run: merge into the existing entry instead of replacing it
+    // (same model+field → keep the day's original `from`, take the new `to`)
+    const key = (c) => `${c.id}|${c.field || (c.added ? "+" : c.removed ? "-" : "")}`;
+    const merged = new Map((log[idx].changes || []).map((c) => [key(c), c]));
+    for (const c of entry.changes) {
+      const old = merged.get(key(c));
+      merged.set(key(c), old && c.field ? { ...c, from: old.from } : c);
+    }
+    log[idx] = { ...log[idx], changes: [...merged.values()] };
+  } else log.unshift(entry);
   const cutoff = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
   log = log.filter((e) => e.date >= cutoff).slice(0, 40);
   const tmp = CHANGELOG_PATH + ".tmp";
@@ -770,6 +786,11 @@ async function runRefresh(reason = "manual", opts = {}) {
       addModels: stat.addModels || [],
       deprecated: stat.deprecated || [],
     });
+    // upstream row lost its score (BenchLM field churn) → keep the last known score
+    if (before) {
+      const prevScore = new Map(before.filter((m) => typeof m.score === "number").map((m) => [m.id, m.score]));
+      for (const m of models) if (m.score == null && prevScore.has(m.id)) m.score = prevScore.get(m.id);
+    }
     const orResult = applyOpenRouterHosts(models, orHosts);
     log.push(`openrouter hosts: ${orResult.filled} prices filled · ${orResult.linked} rows linked`);
     if (!dryRun && orResult.filledRecs.length) {
