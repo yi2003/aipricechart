@@ -1,5 +1,28 @@
 [
  {
+  "date": "2026-10-14",
+  "changes": [
+   {
+    "id": "lfm2-5-24b-a2b",
+    "name": "LFM2.5-24B-A2B",
+    "provider": "LiquidAI",
+    "added": true
+   },
+   {
+    "id": "gpt-4-5",
+    "name": "GPT-4.5",
+    "provider": "OpenAI",
+    "added": true
+   },
+   {
+    "id": "o1-mini",
+    "name": "o1-mini",
+    "provider": "OpenAI",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-10-13",
   "changes": [
    {
