@@ -13,6 +13,96 @@
     "name": "Ultramarine 1 Flash",
     "provider": "Paper Instruments",
     "added": true
+   },
+   {
+    "id": "jais-3-0-9b",
+    "name": "Jais-3-0.9B",
+    "provider": "IFM",
+    "added": true
+   },
+   {
+    "id": "jais-3-0-9b-uno",
+    "name": "Jais-3-0.9B-Uno",
+    "provider": "IFM",
+    "added": true
+   },
+   {
+    "id": "jais-3-3-7b",
+    "name": "Jais-3-3.7B",
+    "provider": "IFM",
+    "added": true
+   },
+   {
+    "id": "jais-3-3-7b-uno",
+    "name": "Jais-3-3.7B-Uno",
+    "provider": "IFM",
+    "added": true
+   },
+   {
+    "id": "jais-3-32b",
+    "name": "Jais-3-32B",
+    "provider": "IFM",
+    "added": true
+   },
+   {
+    "id": "jais-3-32b-uno",
+    "name": "Jais-3-32B-Uno",
+    "provider": "IFM",
+    "added": true
+   },
+   {
+    "id": "jais-3-375b-a23b",
+    "name": "Jais-3-375B-A23B",
+    "provider": "IFM",
+    "added": true
+   },
+   {
+    "id": "jais-3-7b",
+    "name": "Jais-3-7B",
+    "provider": "IFM",
+    "added": true
+   },
+   {
+    "id": "jais-3-7b-uno",
+    "name": "Jais-3-7B-Uno",
+    "provider": "IFM",
+    "added": true
+   },
+   {
+    "id": "jais-3-mova-36b-a4b",
+    "name": "Jais-3-MoVA-36B-A4B",
+    "provider": "IFM",
+    "added": true
+   },
+   {
+    "id": "jais-asr",
+    "name": "Jais-ASR",
+    "provider": "IFM",
+    "added": true
+   },
+   {
+    "id": "d1-ultra",
+    "name": "d1-ultra",
+    "provider": "Liquid AI",
+    "added": true
+   },
+   {
+    "id": "muse-spark-open",
+    "name": "Muse Spark Open",
+    "provider": "Meta",
+    "added": true
+   },
+   {
+    "id": "nemotron-3-5-super-vl-120b-a12b",
+    "name": "Nemotron 3.5 Super VL 120B A12B",
+    "provider": "NVIDIA",
+    "added": true
+   },
+   {
+    "id": "nemotron-3-5-super-vl-120b-a12b-nvfp4",
+    "name": "Nemotron 3.5 Super VL 120B A12B NVFP4",
+    "provider": "NVIDIA",
+    "added": true
    }
   ]
  },
