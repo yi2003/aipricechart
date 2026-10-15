@@ -1,5 +1,22 @@
 [
  {
+  "date": "2026-10-15",
+  "changes": [
+   {
+    "id": "ling-3-1-flash",
+    "name": "Ling 3.1 Flash",
+    "provider": "InclusionAI",
+    "added": true
+   },
+   {
+    "id": "ultramarine-1-flash",
+    "name": "Ultramarine 1 Flash",
+    "provider": "Paper Instruments",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-10-14",
   "changes": [
    {
