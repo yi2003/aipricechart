@@ -1,5 +1,46 @@
 [
  {
+  "date": "2026-10-16",
+  "changes": [
+   {
+    "id": "nemotron-3-5-bolt-74b-a9b",
+    "name": "Nemotron 3.5 Bolt 74B-A9B",
+    "provider": "NVIDIA",
+    "added": true
+   },
+   {
+    "id": "nemotron-3-5-bolt-74b-a9b-bf16",
+    "name": "Nemotron 3.5 Bolt 74B-A9B BF16",
+    "provider": "NVIDIA",
+    "added": true
+   },
+   {
+    "id": "beam-1-0-501b-a23b",
+    "name": "Beam 1.0 501B-A23B",
+    "provider": "Reflection AI",
+    "added": true
+   },
+   {
+    "id": "beam-1-0-501b-a23b-fp8",
+    "name": "Beam 1.0 501B-A23B FP8",
+    "provider": "Reflection AI",
+    "added": true
+   },
+   {
+    "id": "beam-1-0-501b-a23b-nvfp4",
+    "name": "Beam 1.0 501B-A23B NVFP4",
+    "provider": "Reflection AI",
+    "added": true
+   },
+   {
+    "id": "hy-memory-30b-a3b",
+    "name": "Hy-Memory-30B-A3B",
+    "provider": "Tencent",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-10-15",
   "changes": [
    {
@@ -1819,17 +1860,6 @@
     "id": "gemini-3-8-live-extended-thinking",
     "name": "Gemini 3.8 Live Extended Thinking",
     "provider": "Google",
-    "added": true
-   }
-  ]
- },
- {
-  "date": "2026-09-15",
-  "changes": [
-   {
-    "id": "atria-dawn-preview",
-    "name": "Atria Dawn Preview",
-    "provider": "Shanghai Artificial Intelligence Laboratory",
     "added": true
    }
   ]
