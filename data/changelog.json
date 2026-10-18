@@ -1,5 +1,16 @@
 [
  {
+  "date": "2026-10-18",
+  "changes": [
+   {
+    "id": "deepseek-v4-1-flash-1017",
+    "name": "DeepSeek V4.1 Flash 1017",
+    "provider": "DeepSeek",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-10-16",
   "changes": [
    {
@@ -1832,34 +1843,6 @@
     "id": "pareto-26-9",
     "name": "Pareto 26.9",
     "provider": "Unbiased",
-    "added": true
-   }
-  ]
- },
- {
-  "date": "2026-09-17",
-  "changes": [
-   {
-    "id": "ternary-bonsai-2-27b",
-    "name": "Ternary Bonsai 2 27B",
-    "provider": "Prism ML",
-    "added": true
-   }
-  ]
- },
- {
-  "date": "2026-09-16",
-  "changes": [
-   {
-    "id": "gemini-3-8-live",
-    "name": "Gemini 3.8 Live",
-    "provider": "Google",
-    "added": true
-   },
-   {
-    "id": "gemini-3-8-live-extended-thinking",
-    "name": "Gemini 3.8 Live Extended Thinking",
-    "provider": "Google",
     "added": true
    }
   ]
