@@ -1,5 +1,22 @@
 [
  {
+  "date": "2026-10-19",
+  "changes": [
+   {
+    "id": "mercury-3",
+    "name": "Mercury 3",
+    "provider": "Inception",
+    "added": true
+   },
+   {
+    "id": "minimax-m3-1-flash",
+    "name": "MiniMax M3.1 Flash",
+    "provider": "MiniMax",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-10-18",
   "changes": [
    {
@@ -1832,17 +1849,6 @@
     "id": "mimo-v2-6-pro",
     "name": "MiMo-V2.6-Pro",
     "provider": "Xiaomi",
-    "added": true
-   }
-  ]
- },
- {
-  "date": "2026-09-18",
-  "changes": [
-   {
-    "id": "pareto-26-9",
-    "name": "Pareto 26.9",
-    "provider": "Unbiased",
     "added": true
    }
   ]
