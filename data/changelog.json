@@ -1,5 +1,130 @@
 [
  {
+  "date": "2026-10-24",
+  "changes": [
+   {
+    "id": "elephant-1",
+    "name": "elephant-1",
+    "provider": "Baseten",
+    "added": true
+   },
+   {
+    "id": "mammoth-1",
+    "name": "mammoth-1",
+    "provider": "Baseten",
+    "added": true
+   },
+   {
+    "id": "ling-3-0-flash-sante",
+    "name": "Ling 3.0 Flash Sante",
+    "provider": "InclusionAI",
+    "added": true
+   },
+   {
+    "id": "ming-3-0-asr-tiny",
+    "name": "Ming-3.0-asr-tiny",
+    "provider": "InclusionAI",
+    "added": true
+   },
+   {
+    "id": "ming-3-0-audio-flash",
+    "name": "Ming-3.0-audio-flash",
+    "provider": "InclusionAI",
+    "added": true
+   },
+   {
+    "id": "ming-3-0-audio-tiny",
+    "name": "Ming-3.0-audio-tiny",
+    "provider": "InclusionAI",
+    "added": true
+   },
+   {
+    "id": "ming-3-0-tts-0-5b",
+    "name": "Ming-3.0-tts-0.5B",
+    "provider": "InclusionAI",
+    "added": true
+   },
+   {
+    "id": "ming-3-0-tts-tiny",
+    "name": "Ming-3.0-tts-tiny",
+    "provider": "InclusionAI",
+    "added": true
+   },
+   {
+    "id": "sage-a1-5",
+    "name": "Sage-A1.5",
+    "provider": "InternScience",
+    "added": true
+   },
+   {
+    "id": "sage-a1-5-f16-gguf",
+    "name": "Sage-A1.5-F16-GGUF",
+    "provider": "InternScience",
+    "added": true
+   },
+   {
+    "id": "sage-a1-5-fp8",
+    "name": "Sage-A1.5-FP8",
+    "provider": "InternScience",
+    "added": true
+   },
+   {
+    "id": "sage-a1-5-q4-k-m-gguf",
+    "name": "Sage-A1.5-Q4_K_M-GGUF",
+    "provider": "InternScience",
+    "added": true
+   },
+   {
+    "id": "sage-a1-5-q8-0-gguf",
+    "name": "Sage-A1.5-Q8_0-GGUF",
+    "provider": "InternScience",
+    "added": true
+   },
+   {
+    "id": "kimi-k3-1-pro",
+    "name": "Kimi K3.1 Pro",
+    "provider": "Moonshot AI",
+    "added": true
+   },
+   {
+    "id": "cosmos3-nano",
+    "name": "Cosmos3-Nano",
+    "provider": "NVIDIA",
+    "added": true
+   },
+   {
+    "id": "cosmos3-super",
+    "name": "Cosmos3-Super",
+    "provider": "NVIDIA",
+    "added": true
+   },
+   {
+    "id": "nemotron-3-5-bolt-e4b",
+    "name": "Nemotron 3.5 Bolt E4B",
+    "provider": "NVIDIA",
+    "added": true
+   },
+   {
+    "id": "nemotron-3-5-bolt-e4b-bf16",
+    "name": "Nemotron 3.5 Bolt E4B BF16",
+    "provider": "NVIDIA",
+    "added": true
+   },
+   {
+    "id": "orcacyber-nano-1-0",
+    "name": "OrcaCyber-Nano-1.0",
+    "provider": "OrcaRouter",
+    "added": true
+   },
+   {
+    "id": "flint",
+    "name": "Flint",
+    "provider": "Recursive",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-10-21",
   "changes": [
    {
@@ -1879,58 +2004,6 @@
     "field": "output",
     "from": 6,
     "to": 2.5
-   }
-  ]
- },
- {
-  "date": "2026-09-22",
-  "changes": [
-   {
-    "id": "claude-opus-5-5",
-    "name": "Claude Opus 5.5",
-    "provider": "Anthropic",
-    "added": true
-   },
-   {
-    "id": "gpt-6-luna",
-    "name": "GPT-6 Luna",
-    "provider": "OpenAI",
-    "added": true
-   },
-   {
-    "id": "gpt-6-sol",
-    "name": "GPT-6 Sol",
-    "provider": "OpenAI",
-    "added": true
-   }
-  ]
- },
- {
-  "date": "2026-09-21",
-  "changes": [
-   {
-    "id": "step-5-preview",
-    "name": "Step 5 Preview",
-    "provider": "StepFun",
-    "added": true
-   },
-   {
-    "id": "grok-4-7",
-    "name": "Grok 4.7",
-    "provider": "xAI",
-    "added": true
-   },
-   {
-    "id": "mimo-v2-6-flash",
-    "name": "MiMo-V2.6-Flash",
-    "provider": "Xiaomi",
-    "added": true
-   },
-   {
-    "id": "mimo-v2-6-pro",
-    "name": "MiMo-V2.6-Pro",
-    "provider": "Xiaomi",
-    "added": true
    }
   ]
  }
