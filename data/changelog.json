@@ -1,5 +1,52 @@
 [
  {
+  "date": "2026-10-28",
+  "changes": [
+   {
+    "id": "d1-2b",
+    "name": "d1-2B",
+    "provider": "LiquidAI",
+    "added": true
+   },
+   {
+    "id": "d1-omni-2b",
+    "name": "d1-Omni-2B",
+    "provider": "LiquidAI",
+    "added": true
+   },
+   {
+    "id": "lfm3-1-7b",
+    "name": "LFM3-1.7B",
+    "provider": "LiquidAI",
+    "added": true
+   },
+   {
+    "id": "lfm3-1-7b-base",
+    "name": "LFM3-1.7B-Base",
+    "provider": "LiquidAI",
+    "added": true
+   },
+   {
+    "id": "lfm3-audio-2b",
+    "name": "LFM3-Audio-2B",
+    "provider": "LiquidAI",
+    "added": true
+   },
+   {
+    "id": "lfm3-omni-2b",
+    "name": "LFM3-Omni-2B",
+    "provider": "LiquidAI",
+    "added": true
+   },
+   {
+    "id": "lfm3-vl-2b",
+    "name": "LFM3-VL-2B",
+    "provider": "LiquidAI",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-10-27",
   "changes": [
    {
