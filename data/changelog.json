@@ -1,5 +1,50 @@
 [
  {
+  "date": "2026-10-30",
+  "changes": [
+   {
+    "id": "qwen3-5-4b",
+    "name": "Qwen3.5-4B",
+    "provider": "Alibaba",
+    "added": true
+   },
+   {
+    "id": "gemini-4-carbon",
+    "name": "Gemini 4 Carbon",
+    "provider": "Google",
+    "added": true
+   },
+   {
+    "id": "mistral-large-4",
+    "name": "Mistral Large 4",
+    "provider": "Mistral",
+    "field": "input",
+    "from": 0.68,
+    "to": 0.7
+   },
+   {
+    "id": "mistral-large-4",
+    "name": "Mistral Large 4",
+    "provider": "Mistral",
+    "field": "output",
+    "from": 2.09,
+    "to": 2.1
+   },
+   {
+    "id": "nemotron-3-5-transcribe-30b-a4b",
+    "name": "Nemotron 3.5 Transcribe 30B A4B",
+    "provider": "NVIDIA",
+    "added": true
+   },
+   {
+    "id": "particle-1",
+    "name": "Particle-1",
+    "provider": "Particle AI",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-10-28",
   "changes": [
    {
@@ -1958,40 +2003,6 @@
     "id": "litjev-qwen3-8-27b",
     "name": "LitJev (Qwen3.8-27B)",
     "provider": "Zhengxu Yu",
-    "added": true
-   }
-  ]
- },
- {
-  "date": "2026-09-29",
-  "changes": [
-   {
-    "id": "mercury-voice",
-    "name": "Mercury Voice",
-    "provider": "Inception",
-    "added": true
-   },
-   {
-    "id": "gpt-6-1-sol",
-    "name": "GPT-6.1 Sol",
-    "provider": "OpenAI",
-    "added": true
-   }
-  ]
- },
- {
-  "date": "2026-09-28",
-  "changes": [
-   {
-    "id": "claude-sonnet-5-5",
-    "name": "Claude Sonnet 5.5",
-    "provider": "Anthropic",
-    "added": true
-   },
-   {
-    "id": "ember-1",
-    "name": "Ember-1",
-    "provider": "Fireworks",
     "added": true
    }
   ]
