@@ -1,5 +1,16 @@
 [
  {
+  "date": "2026-11-06",
+  "changes": [
+   {
+    "id": "inkling-2-small",
+    "name": "Inkling 2 Small",
+    "provider": "Thinking Machines Lab",
+    "added": true
+   }
+  ]
+ },
+ {
   "date": "2026-11-05",
   "changes": [
    {
