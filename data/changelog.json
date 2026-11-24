@@ -1,5 +1,266 @@
 [
  {
+  "date": "2026-11-24",
+  "changes": [
+   {
+    "id": "qwen4-max",
+    "name": "Qwen4 Max",
+    "provider": "Alibaba",
+    "added": true
+   },
+   {
+    "id": "claude-fable-5-2",
+    "name": "Claude Fable 5.2",
+    "provider": "Anthropic",
+    "added": true
+   },
+   {
+    "id": "claude-mythos-5-2",
+    "name": "Claude Mythos 5.2",
+    "provider": "Anthropic",
+    "added": true
+   },
+   {
+    "id": "celeris-1-1-decision",
+    "name": "Celeris-1.1 Decision",
+    "provider": "Celeris",
+    "field": "input",
+    "from": 0.04,
+    "to": 0.004
+   },
+   {
+    "id": "celeris-1-1-decision",
+    "name": "Celeris-1.1 Decision",
+    "provider": "Celeris",
+    "field": "cached",
+    "from": 0.04,
+    "to": 0.004
+   },
+   {
+    "id": "deepseek-v4-pro",
+    "name": "DeepSeek V4 Pro",
+    "provider": "DeepSeek",
+    "added": true
+   },
+   {
+    "id": "glimpse",
+    "name": "Glimpse",
+    "provider": "Elorian",
+    "added": true
+   },
+   {
+    "id": "gemini-4-hydrogen",
+    "name": "Gemini 4 Hydrogen",
+    "provider": "Google",
+    "added": true
+   },
+   {
+    "id": "gemini-4-neon",
+    "name": "Gemini 4 Neon",
+    "provider": "Google",
+    "added": true
+   },
+   {
+    "id": "gemini-decision-1",
+    "name": "Gemini Decision 1",
+    "provider": "Google",
+    "added": true
+   },
+   {
+    "id": "d1-2",
+    "name": "d1.2",
+    "provider": "Liquid AI",
+    "added": true
+   },
+   {
+    "id": "d1-2-ultra",
+    "name": "d1.2-ultra",
+    "provider": "Liquid AI",
+    "added": true
+   },
+   {
+    "id": "longcat-2-5",
+    "name": "LongCat-2.5",
+    "provider": "Meituan",
+    "added": true
+   },
+   {
+    "id": "muse-ember",
+    "name": "Muse Ember",
+    "provider": "Meta",
+    "added": true
+   },
+   {
+    "id": "mai-code-2",
+    "name": "MAI Code 2",
+    "provider": "Microsoft",
+    "added": true
+   },
+   {
+    "id": "mai-code-2-flash",
+    "name": "MAI Code 2 Flash",
+    "provider": "Microsoft",
+    "added": true
+   },
+   {
+    "id": "mai-code-1-1-flash",
+    "name": "MAI-Code-1.1-Flash",
+    "provider": "Microsoft",
+    "added": true
+   },
+   {
+    "id": "gpt-5",
+    "name": "GPT-5",
+    "provider": "OpenAI",
+    "added": true
+   },
+   {
+    "id": "gpt-6-luna-decisions",
+    "name": "GPT-6 Luna (Decisions)",
+    "provider": "OpenAI",
+    "added": true
+   },
+   {
+    "id": "gpt-6-2-astra",
+    "name": "GPT-6.2 Astra",
+    "provider": "OpenAI",
+    "added": true
+   },
+   {
+    "id": "gpt-6-2-sol",
+    "name": "GPT-6.2 Sol",
+    "provider": "OpenAI",
+    "added": true
+   },
+   {
+    "id": "perplexity-decider-flash-v1-3-4b",
+    "name": "Perplexity Decider Flash v1.3 4B",
+    "provider": "Perplexity",
+    "added": true
+   },
+   {
+    "id": "perplexity-decider-v1-3-27b",
+    "name": "Perplexity Decider v1.3 27B",
+    "provider": "Perplexity",
+    "added": true
+   },
+   {
+    "id": "openjev",
+    "name": "OpenJev",
+    "provider": "razorback16",
+    "added": true
+   },
+   {
+    "id": "sov-transcribe-1",
+    "name": "SOV-Transcribe-1",
+    "provider": "Salesforce",
+    "added": true
+   },
+   {
+    "id": "subq-snap-1-1",
+    "name": "SubQ Snap 1.1",
+    "provider": "Subquadratic",
+    "added": true
+   },
+   {
+    "id": "hy4-flash",
+    "name": "Hy4 flash",
+    "provider": "Tencent",
+    "added": true
+   },
+   {
+    "id": "inkling-2-mini",
+    "name": "Inkling 2 Mini",
+    "provider": "Thinking Machines Lab",
+    "added": true
+   },
+   {
+    "id": "qwen3-5-397b-reasoning",
+    "name": "Qwen3.5 397B (Reasoning)",
+    "provider": "Alibaba",
+    "removed": true
+   },
+   {
+    "id": "claude-opus-4-7-adaptive",
+    "name": "Claude Opus 4.7 (Adaptive)",
+    "provider": "Anthropic",
+    "removed": true
+   },
+   {
+    "id": "deepseek-v3-1-reasoning",
+    "name": "DeepSeek V3.1 (Reasoning)",
+    "provider": "DeepSeek",
+    "removed": true
+   },
+   {
+    "id": "deepseek-v3-2-thinking",
+    "name": "DeepSeek V3.2 (Thinking)",
+    "provider": "DeepSeek",
+    "removed": true
+   },
+   {
+    "id": "deepseek-v4-pro-0813",
+    "name": "DeepSeek V4 Pro 0813",
+    "provider": "DeepSeek",
+    "removed": true
+   },
+   {
+    "id": "djev-thinking",
+    "name": "djev (thinking)",
+    "provider": "Maisa",
+    "removed": true
+   },
+   {
+    "id": "ministral-3-14b-reasoning",
+    "name": "Ministral 3 14B (Reasoning)",
+    "provider": "Mistral",
+    "removed": true
+   },
+   {
+    "id": "ministral-3-3b-reasoning",
+    "name": "Ministral 3 3B (Reasoning)",
+    "provider": "Mistral",
+    "removed": true
+   },
+   {
+    "id": "ministral-3-8b-reasoning",
+    "name": "Ministral 3 8B (Reasoning)",
+    "provider": "Mistral",
+    "removed": true
+   },
+   {
+    "id": "mistral-small-4-reasoning",
+    "name": "Mistral Small 4 (Reasoning)",
+    "provider": "Mistral",
+    "removed": true
+   },
+   {
+    "id": "kimi-k2-5-reasoning",
+    "name": "Kimi K2.5 (Reasoning)",
+    "provider": "Moonshot AI",
+    "removed": true
+   },
+   {
+    "id": "gpt-5-high",
+    "name": "GPT-5 (high)",
+    "provider": "OpenAI",
+    "removed": true
+   },
+   {
+    "id": "openjev-thinking-bf16",
+    "name": "OpenJev (thinking, BF16)",
+    "provider": "razorback16",
+    "removed": true
+   },
+   {
+    "id": "glm-5-reasoning",
+    "name": "GLM-5 (Reasoning)",
+    "provider": "Z.AI",
+    "removed": true
+   }
+  ]
+ },
+ {
   "date": "2026-11-06",
   "changes": [
    {
@@ -168,527 +429,6 @@
     "id": "gpt-6-1-terra",
     "name": "GPT-6.1 Terra",
     "provider": "OpenAI",
-    "added": true
-   }
-  ]
- },
- {
-  "date": "2026-10-24",
-  "changes": [
-   {
-    "id": "elephant-1",
-    "name": "elephant-1",
-    "provider": "Baseten",
-    "added": true
-   },
-   {
-    "id": "mammoth-1",
-    "name": "mammoth-1",
-    "provider": "Baseten",
-    "added": true
-   },
-   {
-    "id": "ling-3-0-flash-sante",
-    "name": "Ling 3.0 Flash Sante",
-    "provider": "InclusionAI",
-    "added": true
-   },
-   {
-    "id": "ming-3-0-asr-tiny",
-    "name": "Ming-3.0-asr-tiny",
-    "provider": "InclusionAI",
-    "added": true
-   },
-   {
-    "id": "ming-3-0-audio-flash",
-    "name": "Ming-3.0-audio-flash",
-    "provider": "InclusionAI",
-    "added": true
-   },
-   {
-    "id": "ming-3-0-audio-tiny",
-    "name": "Ming-3.0-audio-tiny",
-    "provider": "InclusionAI",
-    "added": true
-   },
-   {
-    "id": "ming-3-0-tts-0-5b",
-    "name": "Ming-3.0-tts-0.5B",
-    "provider": "InclusionAI",
-    "added": true
-   },
-   {
-    "id": "ming-3-0-tts-tiny",
-    "name": "Ming-3.0-tts-tiny",
-    "provider": "InclusionAI",
-    "added": true
-   },
-   {
-    "id": "sage-a1-5",
-    "name": "Sage-A1.5",
-    "provider": "InternScience",
-    "added": true
-   },
-   {
-    "id": "sage-a1-5-f16-gguf",
-    "name": "Sage-A1.5-F16-GGUF",
-    "provider": "InternScience",
-    "added": true
-   },
-   {
-    "id": "sage-a1-5-fp8",
-    "name": "Sage-A1.5-FP8",
-    "provider": "InternScience",
-    "added": true
-   },
-   {
-    "id": "sage-a1-5-q4-k-m-gguf",
-    "name": "Sage-A1.5-Q4_K_M-GGUF",
-    "provider": "InternScience",
-    "added": true
-   },
-   {
-    "id": "sage-a1-5-q8-0-gguf",
-    "name": "Sage-A1.5-Q8_0-GGUF",
-    "provider": "InternScience",
-    "added": true
-   },
-   {
-    "id": "kimi-k3-1-pro",
-    "name": "Kimi K3.1 Pro",
-    "provider": "Moonshot AI",
-    "added": true
-   },
-   {
-    "id": "cosmos3-nano",
-    "name": "Cosmos3-Nano",
-    "provider": "NVIDIA",
-    "added": true
-   },
-   {
-    "id": "cosmos3-super",
-    "name": "Cosmos3-Super",
-    "provider": "NVIDIA",
-    "added": true
-   },
-   {
-    "id": "nemotron-3-5-bolt-e4b",
-    "name": "Nemotron 3.5 Bolt E4B",
-    "provider": "NVIDIA",
-    "added": true
-   },
-   {
-    "id": "nemotron-3-5-bolt-e4b-bf16",
-    "name": "Nemotron 3.5 Bolt E4B BF16",
-    "provider": "NVIDIA",
-    "added": true
-   },
-   {
-    "id": "orcacyber-nano-1-0",
-    "name": "OrcaCyber-Nano-1.0",
-    "provider": "OrcaRouter",
-    "added": true
-   },
-   {
-    "id": "flint",
-    "name": "Flint",
-    "provider": "Recursive",
-    "added": true
-   }
-  ]
- },
- {
-  "date": "2026-10-21",
-  "changes": [
-   {
-    "id": "clef-omni",
-    "name": "Clef-Omni",
-    "provider": "Cloudflare",
-    "added": true
-   },
-   {
-    "id": "mercury-decide",
-    "name": "Mercury Decide",
-    "provider": "Inception",
-    "added": true
-   },
-   {
-    "id": "microsoft-decision-1",
-    "name": "Microsoft-Decision-1",
-    "provider": "Microsoft",
-    "added": true
-   },
-   {
-    "id": "drex-v1-5",
-    "name": "Drex v1.5",
-    "provider": "Nace.AI",
-    "added": true
-   },
-   {
-    "id": "drex-v2-0",
-    "name": "Drex v2.0",
-    "provider": "Nace.AI",
-    "added": true
-   },
-   {
-    "id": "ornith-1-5-122b",
-    "name": "Ornith-1.5-122B",
-    "provider": "Ornith AI",
-    "added": true
-   },
-   {
-    "id": "perplexity-decider-flash-v1-2-4b",
-    "name": "Perplexity Decider Flash v1.2 4B",
-    "provider": "Perplexity",
-    "added": true
-   },
-   {
-    "id": "perplexity-decider-v1-1-27b",
-    "name": "Perplexity Decider v1.1 (27B)",
-    "provider": "Perplexity",
-    "field": "input",
-    "from": null,
-    "to": 0.02
-   },
-   {
-    "id": "perplexity-decider-v1-1-27b",
-    "name": "Perplexity Decider v1.1 (27B)",
-    "provider": "Perplexity",
-    "field": "output",
-    "from": null,
-    "to": 0
-   },
-   {
-    "id": "perplexity-decider-v1-2-27b",
-    "name": "Perplexity Decider v1.2 27B",
-    "provider": "Perplexity",
-    "added": true
-   },
-   {
-    "id": "spark-x2-6-4b",
-    "name": "Spark-X2.6-4B",
-    "provider": "SparkLLM",
-    "added": true
-   },
-   {
-    "id": "jev-1-14",
-    "name": "Jev 1.14",
-    "provider": "TypeSafe AI",
-    "added": true
-   }
-  ]
- },
- {
-  "date": "2026-10-19",
-  "changes": [
-   {
-    "id": "mercury-3",
-    "name": "Mercury 3",
-    "provider": "Inception",
-    "added": true
-   },
-   {
-    "id": "minimax-m3-1-flash",
-    "name": "MiniMax M3.1 Flash",
-    "provider": "MiniMax",
-    "added": true
-   }
-  ]
- },
- {
-  "date": "2026-10-18",
-  "changes": [
-   {
-    "id": "deepseek-v4-1-flash-1017",
-    "name": "DeepSeek V4.1 Flash 1017",
-    "provider": "DeepSeek",
-    "added": true
-   }
-  ]
- },
- {
-  "date": "2026-10-16",
-  "changes": [
-   {
-    "id": "nemotron-3-5-bolt-74b-a9b",
-    "name": "Nemotron 3.5 Bolt 74B-A9B",
-    "provider": "NVIDIA",
-    "added": true
-   },
-   {
-    "id": "nemotron-3-5-bolt-74b-a9b-bf16",
-    "name": "Nemotron 3.5 Bolt 74B-A9B BF16",
-    "provider": "NVIDIA",
-    "added": true
-   },
-   {
-    "id": "beam-1-0-501b-a23b",
-    "name": "Beam 1.0 501B-A23B",
-    "provider": "Reflection AI",
-    "added": true
-   },
-   {
-    "id": "beam-1-0-501b-a23b-fp8",
-    "name": "Beam 1.0 501B-A23B FP8",
-    "provider": "Reflection AI",
-    "added": true
-   },
-   {
-    "id": "beam-1-0-501b-a23b-nvfp4",
-    "name": "Beam 1.0 501B-A23B NVFP4",
-    "provider": "Reflection AI",
-    "added": true
-   },
-   {
-    "id": "hy-memory-30b-a3b",
-    "name": "Hy-Memory-30B-A3B",
-    "provider": "Tencent",
-    "added": true
-   }
-  ]
- },
- {
-  "date": "2026-10-15",
-  "changes": [
-   {
-    "id": "ling-3-1-flash",
-    "name": "Ling 3.1 Flash",
-    "provider": "InclusionAI",
-    "added": true
-   },
-   {
-    "id": "ultramarine-1-flash",
-    "name": "Ultramarine 1 Flash",
-    "provider": "Paper Instruments",
-    "added": true
-   },
-   {
-    "id": "jais-3-0-9b",
-    "name": "Jais-3-0.9B",
-    "provider": "IFM",
-    "added": true
-   },
-   {
-    "id": "jais-3-0-9b-uno",
-    "name": "Jais-3-0.9B-Uno",
-    "provider": "IFM",
-    "added": true
-   },
-   {
-    "id": "jais-3-3-7b",
-    "name": "Jais-3-3.7B",
-    "provider": "IFM",
-    "added": true
-   },
-   {
-    "id": "jais-3-3-7b-uno",
-    "name": "Jais-3-3.7B-Uno",
-    "provider": "IFM",
-    "added": true
-   },
-   {
-    "id": "jais-3-32b",
-    "name": "Jais-3-32B",
-    "provider": "IFM",
-    "added": true
-   },
-   {
-    "id": "jais-3-32b-uno",
-    "name": "Jais-3-32B-Uno",
-    "provider": "IFM",
-    "added": true
-   },
-   {
-    "id": "jais-3-375b-a23b",
-    "name": "Jais-3-375B-A23B",
-    "provider": "IFM",
-    "added": true
-   },
-   {
-    "id": "jais-3-7b",
-    "name": "Jais-3-7B",
-    "provider": "IFM",
-    "added": true
-   },
-   {
-    "id": "jais-3-7b-uno",
-    "name": "Jais-3-7B-Uno",
-    "provider": "IFM",
-    "added": true
-   },
-   {
-    "id": "jais-3-mova-36b-a4b",
-    "name": "Jais-3-MoVA-36B-A4B",
-    "provider": "IFM",
-    "added": true
-   },
-   {
-    "id": "jais-asr",
-    "name": "Jais-ASR",
-    "provider": "IFM",
-    "added": true
-   },
-   {
-    "id": "d1-ultra",
-    "name": "d1-ultra",
-    "provider": "Liquid AI",
-    "added": true
-   },
-   {
-    "id": "muse-spark-open",
-    "name": "Muse Spark Open",
-    "provider": "Meta",
-    "added": true
-   },
-   {
-    "id": "nemotron-3-5-super-vl-120b-a12b",
-    "name": "Nemotron 3.5 Super VL 120B A12B",
-    "provider": "NVIDIA",
-    "added": true
-   },
-   {
-    "id": "nemotron-3-5-super-vl-120b-a12b-nvfp4",
-    "name": "Nemotron 3.5 Super VL 120B A12B NVFP4",
-    "provider": "NVIDIA",
-    "added": true
-   }
-  ]
- },
- {
-  "date": "2026-10-14",
-  "changes": [
-   {
-    "id": "lfm2-5-24b-a2b",
-    "name": "LFM2.5-24B-A2B",
-    "provider": "LiquidAI",
-    "added": true
-   },
-   {
-    "id": "gpt-4-5",
-    "name": "GPT-4.5",
-    "provider": "OpenAI",
-    "added": true
-   },
-   {
-    "id": "o1-mini",
-    "name": "o1-mini",
-    "provider": "OpenAI",
-    "added": true
-   }
-  ]
- },
- {
-  "date": "2026-10-13",
-  "changes": [
-   {
-    "id": "scaledown-classify",
-    "name": "ScaleDown Classify",
-    "provider": "ScaleDown",
-    "added": true
-   },
-   {
-    "id": "scaledown-compress",
-    "name": "ScaleDown Compress",
-    "provider": "ScaleDown",
-    "added": true
-   },
-   {
-    "id": "scaledown-extract",
-    "name": "ScaleDown Extract",
-    "provider": "ScaleDown",
-    "added": true
-   },
-   {
-    "id": "scaledown-summarize",
-    "name": "ScaleDown Summarize",
-    "provider": "ScaleDown",
-    "added": true
-   }
-  ]
- },
- {
-  "date": "2026-10-12",
-  "changes": [
-   {
-    "id": "muse-wonder",
-    "name": "Muse Wonder",
-    "provider": "Meta",
-    "added": true
-   }
-  ]
- },
- {
-  "date": "2026-10-09",
-  "changes": [
-   {
-    "id": "celeris-1-decision",
-    "name": "Celeris-1 Decision",
-    "provider": "Celeris",
-    "added": true
-   },
-   {
-    "id": "glide",
-    "name": "GLiDE",
-    "provider": "Fastino",
-    "field": "input",
-    "from": 0.3,
-    "to": 0.15
-   },
-   {
-    "id": "mellum2-1-12b-a2-5b-thinking",
-    "name": "Mellum2.1-12B-A2.5B-Thinking",
-    "provider": "JetBrains",
-    "added": true
-   },
-   {
-    "id": "perplexity-decider-v1-27b",
-    "name": "Perplexity Decider v1 27B",
-    "provider": "Perplexity",
-    "field": "input",
-    "from": 0.04,
-    "to": 0.02
-   }
-  ]
- },
- {
-  "date": "2026-10-07",
-  "changes": [
-   {
-    "id": "claude-haiku-5-5",
-    "name": "Claude Haiku 5.5",
-    "provider": "Anthropic",
-    "added": true
-   },
-   {
-    "id": "claude-sonnet-5-5",
-    "name": "Claude Sonnet 5.5",
-    "provider": "Anthropic",
-    "field": "cached",
-    "from": 0.2,
-    "to": 0.1
-   },
-   {
-    "id": "d1-3b",
-    "name": "d1-3B",
-    "provider": "LiquidAI",
-    "added": true
-   },
-   {
-    "id": "d1-omni-600m",
-    "name": "d1-omni-600M",
-    "provider": "LiquidAI",
-    "added": true
-   },
-   {
-    "id": "pplx-embed-v2-late-0-6b",
-    "name": "pplx-embed-v2-late-0.6b",
-    "provider": "Perplexity",
-    "added": true
-   },
-   {
-    "id": "pplx-embed-v2-late-9b",
-    "name": "pplx-embed-v2-late-9b",
-    "provider": "Perplexity",
     "added": true
    }
   ]
